@@ -1,0 +1,30 @@
+/*
+ * @Author: openrhc 
+ * @Date: 2022-04-08 22:27:48 
+ * @Last Modified by: openrhc
+ * @Last Modified time: 2022-04-17 20:02:46
+ */
+
+import Router from 'koa-router'
+
+import UsersRouter from './users/index.js'
+import PapersRouter from './papers/index.js'
+import CommentsRouter from './comments/index.js'
+import QuestionsRouter from './questions/index.js'
+import AnswersRouter from './answers/index.js'
+import FilesRouter from './files/index.js'
+import StatusRouter from './status/index.js'
+import BannersRouter from './banners/index.js'
+
+const router = new Router()
+
+router.use('/users', UsersRouter.routes())
+router.use('/papers', PapersRouter.routes())
+router.use('/comments', CommentsRouter.routes())
+router.use('/questions', QuestionsRouter.routes())
+router.use('/answers', AnswersRouter.routes())
+router.use('/files', FilesRouter.routes())
+router.use('/status', StatusRouter.routes())
+router.use('/banners', BannersRouter.routes())
+
+export default router
