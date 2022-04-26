@@ -1,0 +1,40 @@
+{
+  "name": "online-answer",
+  "version": "1.0.0",
+  "description": "基于Vue.js的在线答题系统，技术栈：JavaScript、Element Plus、MySQL、Node.js。",
+  "main": "vite.config.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^1.1.1",
+    "axios": "^0.26.1",
+    "echarts": "^5.3.1",
+    "element-plus": "^2.0.5",
+    "face-api.js": "^0.22.2",
+    "js-md5": "^0.7.3",
+    "lodash": "^4.17.21",
+    "vue": "^3.2.25",
+    "vue-draggable-next": "^2.1.1",
+    "vue-router": "^4.0.13",
+    "vuex": "^4.0.2"
+  },
+  "devDependencies": {
+    "@types/js-md5": "^0.4.3",
+    "@types/lodash-es": "^4.17.6",
+    "@vitejs/plugin-vue": "^2.2.0",
+    "less": "^4.1.2",
+    "unplugin-auto-import": "^0.6.4",
+    "unplugin-vue-components": "^0.18.0",
+    "vite": "^2.8.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "SEE LICENSE IN `LICENSE`",
+  "bugs": {
+    "url": "https://github.com/openrhc/Online-Answer/issues"
+  },
+  "homepage": "https://github.com/openrhc/Online-Answer#readme"
+}

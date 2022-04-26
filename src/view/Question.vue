@@ -1,0 +1,88 @@
+<script setup>
+import { useRoute } from "vue-router";
+import { reactive } from "vue";
+
+import { getQuestionsById } from "@/request/api.js";
+import { computeAnswerIndex } from "@/utils/compute.js";
+
+const route = useRoute();
+const { id } = route.params;
+const data = reactive({
+  info: {
+    author: {
+      nickname: "",
+    },
+  },
+});
+// 正确答案列表
+const correctList = reactive([]);
+
+(async () => {
+  const res = await getQuestionsById(id);
+  if (res.code !== 0) {
+    ElMessage.error(res.msg);
+    return;
+  }
+  data.info = res.data;
+  // 计算正确答案
+  if (data.info.public) {
+    const arr = computeAnswerIndex(data.info);
+    correctList.splice(0);
+    correctList.push(...arr);
+  }
+})();
+</script>
+
+<template>
+  <div class="info">
+    <h1>{{ data.info.title }}</h1>
+    <ul
+      style="margin-top: 32px"
+      :style="{ listStyle: data.info.type === 1 ? 'square' : '' }"
+    >
+      <li
+        v-for="(o, i) in data.info.option"
+        :key="o"
+        class="item"
+        :class="{ correct: i in correctList }"
+      >
+        {{ o }}
+      </li>
+    </ul>
+    <div class="descrption">题目解析：暂无。</div>
+    <div class="from">
+      本题目来自用户《
+      {{ data.info.author.nickname }}
+      》
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.info {
+  padding: 32px;
+}
+.item {
+  font-size: 18px;
+  padding: 8px;
+  color: #595959;
+  margin: 8px 0;
+  border-radius: 8px;
+}
+.correct {
+  color: #59c220;
+}
+.from {
+  margin-top: 32px;
+  color: #737373;
+  font-size: 14px;
+  text-align: right;
+}
+.descrption {
+  padding: 32px;
+  margin-top: 32px;
+  color: #737373;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+</style>

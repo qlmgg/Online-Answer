@@ -1,0 +1,20 @@
+:root {
+    /* --el-color-primary: green; */
+    --body-color: #f0f2f5;
+}
+
+body {
+    margin: 0 auto;
+    min-width: 1300px;
+    background: var(--body-color);
+}
+
+.link {
+    text-decoration: none;
+    color: var(--el-color-primary);
+}
+
+/* 题目管理页面 - 编辑题目 dialog宽度 */
+.width75 {
+    --el-dialog-width: 75% !important;
+}
