@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:05:23 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-25 17:20:12
+ * @Last Modified time: 2022-04-26 22:02:30
  */
 
 import Answer from '../models/answer.js'
@@ -124,6 +124,9 @@ class AnswerCtl {
         if (!answer) {
             ctx.body = { code: -1, msg: message.AnswerNotFound }
             return
+        }
+        if (!answer.exampaper) {
+            answer.exampaper = { _id: -1 }
         }
         const exampaper = await Exampaper.findById(answer.exampaper._id)
         if (exampaper && !exampaper.allow_view) {
