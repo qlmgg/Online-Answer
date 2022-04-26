@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:26:23 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-22 16:29:27
+ * @Last Modified time: 2022-04-26 21:22:03
  */
 
 import jwt from 'jsonwebtoken'
@@ -46,7 +46,6 @@ export default function () {
                         return
                     }
                 } catch (e) {
-                    console.log(e);
                     ctx.body = { code: 401, msg: message.TokenInvalid }
                     return
                 }

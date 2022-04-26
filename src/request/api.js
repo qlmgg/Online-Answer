@@ -89,3 +89,9 @@ export const updateBanner = ({ id = '', data = {} }) => request.put(`/banners/${
 
 // 删除Banner
 export const deleteBanner = (id = '') => request.delete(`/banners/${id}`)
+
+// 热词
+export const getHotWords = () => request.get('/hotwords')
+
+// 搜索
+export const search = ({ keywords = '', type = 0, limit = 10, page = 1 } = {}) => request.get(`/hotwords/search?keywords=${keywords}&type=${type}&page=${page}&limit=${limit}`)

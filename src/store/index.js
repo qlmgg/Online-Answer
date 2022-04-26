@@ -3,7 +3,8 @@ import { createStore } from 'vuex'
 const store = createStore({
     state: {
         token: undefined,
-        user: undefined
+        user: undefined,
+        searchState: undefined
     },
     getters: {
 
@@ -14,6 +15,9 @@ const store = createStore({
         },
         updateUser(state, value) {
             state.user = value
+        },
+        updatesearchState(state, value) {
+            state.searchState = value
         }
     },
     actions: {
