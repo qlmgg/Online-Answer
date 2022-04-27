@@ -2,7 +2,13 @@
 import { reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
-import { Edit, Share, Refresh, Delete } from "@element-plus/icons-vue";
+import {
+  Edit,
+  Share,
+  Refresh,
+  Delete,
+  UserFilled,
+} from "@element-plus/icons-vue";
 
 import CommentItem from "@/components/CommentItem.vue";
 import {
@@ -249,12 +255,11 @@ const handleDeleteComment = async (comment, index) => {
     <!-- 评论组件 -->
     <el-row class="comment-wrap" align="middle" v-if="user">
       <el-col :span="1">
-        <el-avatar
-          size="large"
-          :src="user.avatar || 'imgs/default-avatar.png'"
-        />
+        <el-avatar size="large" :src="user.avatar">
+          <el-icon :size="32"> <UserFilled /> </el-icon>
+        </el-avatar>
       </el-col>
-      <el-col :span="22">
+      <el-col :span="22" style="padding-left: 8px">
         <el-input placeholder="请输入评论" v-model="comment" />
       </el-col>
       <el-col :span="1">
@@ -280,9 +285,10 @@ const handleDeleteComment = async (comment, index) => {
         <template
           #action
           v-if="
-            c.user._id === user._id ||
-            exampaper.info.from._id === user._id ||
-            user.role > 0
+            user &&
+            (c.user._id === user._id ||
+              exampaper.info.from._id === user._id ||
+              user.role > 0)
           "
         >
           <el-button

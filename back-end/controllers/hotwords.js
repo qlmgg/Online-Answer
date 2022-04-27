@@ -31,7 +31,7 @@ class HotWordsCtl {
                 { keywords: { $regex: reg } }
             ]
         }
-        const data = await HotWords.find(filter).limit(30).sort({ count: -1 })
+        const data = await HotWords.find(filter).limit(10).sort({ count: -1 })
         ctx.body = { code: 0, msg: message.QuerySuccess, data }
     }
 
@@ -42,8 +42,10 @@ class HotWordsCtl {
         const reg = new RegExp(keywords)
         const hotwords = await HotWords.findOne({ keywords })
         if (hotwords) {
+            // 搜索次数 + 1
             await HotWords.findByIdAndUpdate(hotwords._id, { count: hotwords.count + 1 })
-        } else {
+        } else if (keywords.length <= 12) {
+            // 保存关键词
             await new HotWords({ keywords, count: 1 }).save()
         }
         if (type === '0') {

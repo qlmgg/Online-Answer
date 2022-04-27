@@ -1,5 +1,5 @@
 <script setup>
-import { Male, Female } from "@element-plus/icons-vue";
+import { Male, Female, UserFilled } from "@element-plus/icons-vue";
 
 import { id2time, friendlyTime } from "@/utils/index.js";
 import School from "@/assets/school.json";
@@ -16,10 +16,7 @@ const { comment } = props;
 <template>
   <el-row>
     <el-col :span="1">
-      <el-avatar
-        :size="40"
-        :src="comment.user.avatar || './imgs/default-avatar.png'"
-      />
+      <el-avatar :size="40" :src="comment.user.avatar" :icon="UserFilled" />
     </el-col>
     <el-col :span="23">
       <el-row class="head">

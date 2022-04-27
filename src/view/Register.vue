@@ -115,16 +115,16 @@ const handleSchoolChange = (v) => {
       </el-upload>
     </el-form-item>
     <el-form-item label="用户名">
-      <el-input v-model="form.username"></el-input>
+      <el-input v-model="form.username" maxlength="20"></el-input>
     </el-form-item>
-    <el-form-item label="密码">
+    <el-form-item label="密码" maxlength="50">
       <el-input
         v-model="form.password1"
         type="password"
         show-password
       ></el-input>
     </el-form-item>
-    <el-form-item label="确认密码">
+    <el-form-item label="确认密码" maxlength="50">
       <el-input
         v-model="form.password2"
         type="password"
@@ -132,7 +132,7 @@ const handleSchoolChange = (v) => {
       ></el-input>
     </el-form-item>
     <el-form-item label="昵称">
-      <el-input v-model="form.nickname"></el-input>
+      <el-input v-model="form.nickname" maxlength="12"></el-input>
     </el-form-item>
     <el-form-item label="性别">
       <el-radio-group v-model="form.gender">
@@ -154,7 +154,7 @@ const handleSchoolChange = (v) => {
       >
     </el-form-item>
     <el-form-item>
-      <el-link href="/login">已有账户，去登录</el-link>
+      <router-link to="/Login" class="link"> 已有账户，去登录 </router-link>
     </el-form-item>
   </el-form>
 </template>

@@ -69,11 +69,19 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach((to, from, next) => {
     // 对需要登录才能操作的页面进行判断，如果用户没有登录，则跳转到登录页面
+    const path = to.path.toLocaleLowerCase()
     if (
-        (to.path.startsWith('/answer/') || to.path.startsWith('/admin') || to.path === '/center') &&
-        !window.localStorage.getItem('user')
+        path.startsWith('/answer') ||
+        path.startsWith('/admin') ||
+        path.startsWith('/center') ||
+        path.startsWith('/question') ||
+        path.startsWith('/result')
     ) {
-        return next({ path: '/login' })
+        try {
+            JSON.parse(localStorage.getItem('user'))
+        } catch (e) {
+            return next({ path: '/Login' })
+        }
     }
     next()
 })

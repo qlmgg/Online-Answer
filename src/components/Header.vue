@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { Male, Female, Search } from "@element-plus/icons-vue";
+import { Male, Female, Search, UserFilled } from "@element-plus/icons-vue";
 
 import { logout } from "@/request/api.js";
 
@@ -55,10 +55,9 @@ const handleLogout = () => {
           </el-menu-item>
           <el-sub-menu index="2" v-if="store.state.user">
             <template #title>
-              <el-avatar
-                icon="UserFilled"
-                :src="store.state.user.avatar || './imgs/default-avatar.png'"
-              ></el-avatar>
+              <el-avatar :src="store.state.user.avatar">
+                <el-icon> <UserFilled /> </el-icon>
+              </el-avatar>
               <el-divider direction="vertical"></el-divider>
               <el-icon v-if="store.state.user.gender === 0">
                 <female color="pink" />
@@ -72,13 +71,13 @@ const handleLogout = () => {
             <el-menu-item v-if="store.state.user.role > -1" index="/Admin">
               后台管理
             </el-menu-item>
-            <el-menu-item index="#" @click="handleLogout"
-              >退出登录</el-menu-item
-            >
+            <el-menu-item index="#" @click="handleLogout">
+              退出登录
+            </el-menu-item>
           </el-sub-menu>
-          <el-menu-item index="/login" v-else>
+          <el-menu-item index="/Login" v-else>
             <template #title>
-              <el-avatar icon="UserFilled"></el-avatar>
+              <el-avatar :icon="UserFilled"></el-avatar>
               <el-divider direction="vertical"></el-divider>
               未登录
             </template>

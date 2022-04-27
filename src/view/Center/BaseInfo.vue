@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { useStore } from "vuex";
+import { UserFilled } from "@element-plus/icons-vue";
 
 import SchoolSelect from "@/components/SchoolSelect.vue";
 import { updateUser, updatePwd } from "@/request/api.js";
@@ -62,7 +63,6 @@ const beforeAvatarUpload = (file) => {
   if (!isLt2M) {
     ElMessage.error("头像尺寸不能超过2MB");
   }
-  console.log(file.raw);
   return isImage && isLt2M;
 };
 
@@ -111,7 +111,9 @@ const handleUpdatePwd = async () => {
 };
 </script>
 <template>
-  <el-avatar :size="120" :src="user.avatar" />
+  <el-avatar :size="120" :src="user.avatar">
+    <el-icon :size="100"> <UserFilled /> </el-icon>
+  </el-avatar>
   <el-descriptions title="个人资料" direction="vertical" :column="5" border>
     <el-descriptions-item label="用户ID">
       {{ user._id }}
@@ -148,24 +150,36 @@ const handleUpdatePwd = async () => {
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
         >
-          <img :src="editUser.avatar" class="avatar" />
+          <el-avatar :src="editUser.avatar" :size="100" class="avatar">
+            <el-icon :size="80"><UserFilled /></el-icon>
+          </el-avatar>
         </el-upload>
       </el-form-item>
-      <el-form-item label="昵称">
-        <el-input v-model="editUser.nickname" autocomplete="off" />
+      <el-form-item label="昵称" label-width="80px">
+        <el-input
+          v-model="editUser.nickname"
+          maxlength="12"
+          autocomplete="off"
+        />
       </el-form-item>
-      <el-form-item label="性别">
+      <el-form-item label="性别" label-width="80px">
         <el-select v-model="editUser.gender">
           <el-option label="女性" :value="0" />
           <el-option label="男性" :value="1" />
           <el-option label="保密" :value="2" />
         </el-select>
       </el-form-item>
-      <el-form-item label="学校">
+      <el-form-item label="学校" label-width="80px">
         <SchoolSelect :value="editUser.school" @schoolChange="schoolChange" />
       </el-form-item>
-      <el-form-item label="个人简介">
-        <el-input v-model="editUser.profile" autocomplete="off" />
+      <el-form-item label="个人简介" label-width="80px">
+        <el-input
+          v-model="editUser.profile"
+          autocomplete="off"
+          type="textarea"
+          :rows="4"
+          maxlength="500"
+        />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -178,27 +192,30 @@ const handleUpdatePwd = async () => {
   <!-- 修改密码 -->
   <el-dialog v-model="showEditPwd" title="修改密码">
     <el-form>
-      <el-form-item label="原密码">
+      <el-form-item label="原密码" label-width="80px">
         <el-input
           v-model="editPwd.pwd"
           type="password"
           show-password
+          maxlength="50"
           autocomplete="off"
         />
       </el-form-item>
-      <el-form-item label="新密码">
+      <el-form-item label="新密码" label-width="80px">
         <el-input
           v-model="editPwd.pwd1"
           type="password"
           show-password
+          maxlength="50"
           autocomplete="off"
         />
       </el-form-item>
-      <el-form-item label="再次输入">
+      <el-form-item label="再次输入" label-width="80px">
         <el-input
           v-model="editPwd.pwd2"
           type="password"
           show-password
+          maxlength="50"
           autocomplete="off"
         />
       </el-form-item>

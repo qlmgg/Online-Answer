@@ -93,6 +93,7 @@ onBeforeRouteLeave((to) => {
         <el-input
           placeholder="请输入关键词以搜索"
           v-model="keywords"
+          maxlength="200"
           @keyup.enter="handleSearch"
         >
           <template #prepend>

@@ -50,27 +50,27 @@ handleChange();
       <el-col :span="3" v-else class="no-2">
         <el-avatar :size="70"></el-avatar>
         <span class="nickname">虚位以待</span>
-        <span class="count"></span>
+        <span class="count">-</span>
       </el-col>
       <el-col :span="3" v-if="list[0]" class="no-1">
         <el-avatar :size="80" :src="list[0].user.avatar"></el-avatar>
         <span class="nickname">{{ list[0].user.nickname }}</span>
-        <span class="count">{{ list[1].count }}</span>
+        <span class="count">{{ list[0].count }}</span>
       </el-col>
       <el-col :span="3" v-else class="no-1">
-        <el-avatar :size="70"></el-avatar>
+        <el-avatar :size="80"></el-avatar>
         <span class="nickname">虚位以待</span>
-        <span class="count"></span>
+        <span class="count">-</span>
       </el-col>
       <el-col :span="3" v-if="list[2]" class="no-3">
         <el-avatar :size="60" :src="list[2].user.avatar"></el-avatar>
         <span class="nickname">{{ list[2].user.nickname }}</span>
-        <span class="count">{{ list[1].count }}</span>
+        <span class="count">{{ list[2].count }}</span>
       </el-col>
       <el-col :span="3" v-else class="no-3">
-        <el-avatar :size="70"></el-avatar>
+        <el-avatar :size="60"></el-avatar>
         <span class="nickname">虚位以待</span>
-        <span class="count"></span>
+        <span class="count">-</span>
       </el-col>
     </el-row>
   </div>

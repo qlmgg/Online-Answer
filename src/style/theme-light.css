@@ -18,3 +18,8 @@ body {
 .width75 {
     --el-dialog-width: 75% !important;
 }
+
+/* 头部用户头像框 */
+.header-wrap .el-menu-item [class^=el-icon] {
+    margin-right: 0;
+}

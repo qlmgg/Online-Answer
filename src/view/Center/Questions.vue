@@ -25,14 +25,20 @@ handlePageChange();
     <el-col :span="6" style="padding-right: 16px">
       <el-space :size="16" wrap fill>
         <el-card shadow="hover">
-          <el-tag size="large"> 错题数量： {{ total }} 题 </el-tag>
+          <el-tag size="large">
+            错题数量： {{ singleCount + mutltiCount }} 题
+          </el-tag>
         </el-card>
         <el-card shadow="hover">
           <el-tag style="margin-bottom: 8px">
             单选题： {{ singleCount }} 题
           </el-tag>
           <el-progress
-            :percentage="Number(((singleCount / total) * 100).toFixed(2)) || 0"
+            :percentage="
+              Number(
+                ((singleCount / (singleCount + mutltiCount)) * 100).toFixed(2)
+              ) || 0
+            "
           />
         </el-card>
         <el-card shadow="hover">
@@ -40,7 +46,11 @@ handlePageChange();
             多选题： {{ mutltiCount }} 题
           </el-tag>
           <el-progress
-            :percentage="Number(((mutltiCount / total) * 100).toFixed(2)) || 0"
+            :percentage="
+              Number(
+                ((mutltiCount / (singleCount + mutltiCount)) * 100).toFixed(2)
+              ) || 0
+            "
           />
         </el-card>
       </el-space>

@@ -4,12 +4,6 @@ const props = defineProps({
   answer: Object,
 });
 const { answer } = props;
-// 正确数量
-const correctCount = answer.answers.filter(
-  (v) => v.answer === v.question.answer
-).length;
-// 正确率
-const correctRate = (correctCount / answer.answers.length) * 100;
 </script>
 
 <template>
@@ -17,7 +11,7 @@ const correctRate = (correctCount / answer.answers.length) * 100;
     <template #header>
       <div class="card-header">
         <el-row>
-          <el-col :span="20">
+          <el-col :span="18">
             <slot name="index" />
             <el-tag
               size="small"
@@ -28,19 +22,33 @@ const correctRate = (correctCount / answer.answers.length) * 100;
             >
               严格卷
             </el-tag>
-            <router-link :to="`/result/${answer._id}`" class="link">
+            <router-link
+              :to="`/exampaper/${answer.exampaper._id}`"
+              class="link"
+            >
               {{ answer.exampaper.title }}
             </router-link>
           </el-col>
-          <el-col :span="4" class="score">
+          <el-col
+            :span="6"
+            class="score"
+            style="display: flex; justify-content: space-between"
+          >
             得分：{{ answer.score.toFixed(2) }} 分
+            <router-link
+              v-if="answer.exampaper.allow_view"
+              :to="`/result/${answer._id}`"
+              class="link"
+            >
+              查看解析
+            </router-link>
           </el-col>
         </el-row>
       </div>
     </template>
     <div class="text item">
-      <el-tag :type="correctRate < 60 ? 'danger' : 'success'">
-        正确率: {{ correctRate.toFixed(2) }} %
+      <el-tag :type="answer.correctRate < 60 ? 'danger' : 'success'">
+        正确率: {{ answer.correctRate.toFixed(2) }} %
       </el-tag>
       <el-tag size="small" type="warning" effect="plain">
         题量：{{ answer.answers.length }} 题

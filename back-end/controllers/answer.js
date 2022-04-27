@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:05:23 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-27 15:55:04
+ * @Last Modified time: 2022-04-27 22:21:37
  */
 
 import Answer from '../models/answer.js'
@@ -52,9 +52,14 @@ class AnswerCtl {
             if (!v.exampaper) {
                 v.exampaper = { title: '试卷已删除' }
             }
+            // 如果不可查看结果，则删除answers字段
+            if (!v.exampaper.allow_view) {
+                v.answers = []
+            }
         })
         const total = answers.length // 总数
         const _answers = answers.slice(skip, skip + limit * 1) // 分页
+
         ctx.body = {
             code: 0,
             msg: message.QuerySuccess,
@@ -87,13 +92,19 @@ class AnswerCtl {
         let singleCount = 0
         let mutltiCount = 0
         answers.forEach(v => {
+            if (!v.exampaper) {
+                v.exampaper = { title: '已删除试卷' }
+            }
             v.answers.forEach(vv => {
                 if (vv.question.type !== 2 && vv.answer !== vv.question.answer) {
-                    wrongs.push({
-                        ...vv.question,
-                        result: vv.answer, // 将用户的答题放入题目
-                        exampaper: v.exampaper, // 将试卷信息放入题目
-                    })
+                    // 试卷可查看结果时，将错题放入wrongs
+                    if (v.exampaper.allow_view) {
+                        wrongs.push({
+                            ...vv.question,
+                            result: vv.answer, // 将用户的答题放入题目
+                            exampaper: v.exampaper, // 将试卷信息放入题目
+                        })
+                    }
                     if (vv.question.type === 0) {
                         singleCount += 1
                     } else {
@@ -102,7 +113,6 @@ class AnswerCtl {
                 }
             })
         })
-        const total = wrongs.length
         const _wrongs = wrongs.slice(skip, skip + limit * 1) // 分页
         // 处理exampaper为null的情况
         _wrongs.forEach((v, i) => {
@@ -113,7 +123,7 @@ class AnswerCtl {
         ctx.body = {
             code: 0,
             msg: message.QuerySuccess,
-            data: { wrongs: _wrongs, total, singleCount, mutltiCount }
+            data: { wrongs: _wrongs, total: wrongs.length, singleCount, mutltiCount }
         }
     }
 
@@ -182,13 +192,16 @@ class AnswerCtl {
             answer.question = questions[i]
             // 将
         }
+        // 正确率
+        const correctRate = (score / questions.length) * 100;
         // 按100分比例转换得分
         score = score * (100 / answers.length) || 0
         const data = {
             user,
             exampaper,
             answers,
-            score
+            score,
+            correctRate
         }
         const { _id } = await new Answer(data).save()
         // 统计答卷到排行榜

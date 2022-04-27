@@ -55,13 +55,14 @@ const onSubmit = () => {
       ></el-image>
     </el-form-item>
     <el-form-item label="用户名">
-      <el-input v-model="form.username"></el-input>
+      <el-input v-model="form.username" maxlength="20"></el-input>
     </el-form-item>
     <el-form-item label="密码">
       <el-input
         v-model="form.password"
         type="password"
         show-password
+        maxlength="50"
       ></el-input>
     </el-form-item>
     <el-form-item>
@@ -74,7 +75,9 @@ const onSubmit = () => {
       >
     </el-form-item>
     <el-form-item>
-      <el-link href="/register">没有账户？点击注册！</el-link>
+      <router-link to="/Register" class="link">
+        没有账户？点击注册！
+      </router-link>
     </el-form-item>
   </el-form>
 </template>
@@ -84,6 +87,5 @@ const onSubmit = () => {
   padding: 32px;
   width: 600px;
   box-sizing: border-box;
-  background-color: #fff;
 }
 </style>

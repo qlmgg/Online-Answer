@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:26:33 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-09 16:48:48
+ * @Last Modified time: 2022-04-27 21:54:04
  */
 
 import mongoose from "mongoose";
@@ -30,6 +30,11 @@ const answerSchema = new Schema({
     },
     // 得分
     score: {
+        type: Number,
+        required: true
+    },
+    // 正确率
+    correctRate: {
         type: Number,
         required: true
     }
