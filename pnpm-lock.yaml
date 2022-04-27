@@ -2,10 +2,12 @@ lockfileVersion: 5.3
 
 specifiers:
   '@element-plus/icons-vue': ^1.1.1
+  '@types/bcryptjs': ^2.4.2
   '@types/js-md5': ^0.4.3
   '@types/lodash-es': ^4.17.6
   '@vitejs/plugin-vue': ^2.2.0
   axios: ^0.26.1
+  bcryptjs: ^2.4.3
   echarts: ^5.3.1
   element-plus: ^2.0.5
   face-api.js: ^0.22.2
@@ -23,6 +25,7 @@ specifiers:
 dependencies:
   '@element-plus/icons-vue': registry.npmmirror.com/@element-plus/icons-vue/1.1.1_vue@3.2.31
   axios: registry.npmmirror.com/axios/0.26.1
+  bcryptjs: registry.npmmirror.com/bcryptjs/2.4.3
   echarts: registry.npmmirror.com/echarts/5.3.1
   element-plus: registry.npmmirror.com/element-plus/2.0.5_1a412d14def5ff5ca1122000e4bee666
   face-api.js: registry.npmmirror.com/face-api.js/0.22.2
@@ -34,6 +37,7 @@ dependencies:
   vuex: registry.npmmirror.com/vuex/4.0.2_vue@3.2.31
 
 devDependencies:
+  '@types/bcryptjs': registry.npmmirror.com/@types/bcryptjs/2.4.2
   '@types/js-md5': registry.npmmirror.com/@types/js-md5/0.4.3
   '@types/lodash-es': registry.npmmirror.com/@types/lodash-es/4.17.6
   '@vitejs/plugin-vue': registry.npmmirror.com/@vitejs/plugin-vue/2.2.4_vite@2.8.6+vue@3.2.31
@@ -132,6 +136,12 @@ packages:
       node-fetch: registry.npmmirror.com/node-fetch/2.1.2
       seedrandom: registry.npmmirror.com/seedrandom/2.4.3
     dev: false
+
+  registry.npmmirror.com/@types/bcryptjs/2.4.2:
+    resolution: {integrity: sha512-LiMQ6EOPob/4yUL66SZzu6Yh77cbzJFYll+ZfaPiPPFswtIlA/Fs1MzdKYA7JApHU49zQTbJGX3PDmCpIdDBRQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/bcryptjs/-/bcryptjs-2.4.2.tgz}
+    name: '@types/bcryptjs'
+    version: 2.4.2
+    dev: true
 
   registry.npmmirror.com/@types/js-md5/0.4.3:
     resolution: {integrity: sha512-BIga/WEqTi35ccnGysOuO4RmwVnpajv9oDB/sDQSY2b7/Ac7RyYR30bv7otZwByMvOJV9Vqq6/O1DFAnOzE4Pg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/js-md5/-/js-md5-0.4.3.tgz}
@@ -369,6 +379,12 @@ packages:
     name: balanced-match
     version: 1.0.2
     dev: true
+
+  registry.npmmirror.com/bcryptjs/2.4.3:
+    resolution: {integrity: sha512-V/Hy/X9Vt7f3BbPJEi8BdVFMByHi+jNXrYkW3huaybV/kQ0KJg0Y6PkEMbn+zeT+i+SiKZ/HMqJGIIt4LZDqNQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/bcryptjs/-/bcryptjs-2.4.3.tgz}
+    name: bcryptjs
+    version: 2.4.3
+    dev: false
 
   registry.npmmirror.com/binary-extensions/2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/binary-extensions/-/binary-extensions-2.2.0.tgz}

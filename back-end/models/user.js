@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:27:02 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-22 14:49:38
+ * @Last Modified time: 2022-04-27 12:42:59
  */
 
 import mongoose from "mongoose";
@@ -17,11 +17,10 @@ const userSchema = new Schema({
         required: true,
         maxlength: 20
     },
-    // 密码MD5
+    // 密码（bcrypt算法）
     password: {
         type: String,
         required: true,
-        maxlength: 32,
         select: false // 查询时不会返回此字段
     },
     // 昵称

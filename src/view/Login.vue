@@ -2,7 +2,6 @@
 import { reactive, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import md5 from "js-md5";
 
 import { login } from "@/request/api.js";
 
@@ -23,7 +22,7 @@ const onSubmit = () => {
   loading.value = true;
   login({
     username: form.username.trim(),
-    password: md5(form.password.trim()),
+    password: form.password.trim(),
   })
     .then((res) => {
       loading.value = false;
@@ -75,7 +74,7 @@ const onSubmit = () => {
       >
     </el-form-item>
     <el-form-item>
-      <el-link href="#/register">没有账户？点击注册！</el-link>
+      <el-link href="/register">没有账户？点击注册！</el-link>
     </el-form-item>
   </el-form>
 </template>

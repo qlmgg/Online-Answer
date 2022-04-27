@@ -3,7 +3,6 @@ import { ref, reactive } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Plus, Edit } from "@element-plus/icons-vue";
-import md5 from "js-md5";
 
 import SchoolSelect from "@/components/SchoolSelect.vue";
 import { register } from "@/request/api.js";
@@ -15,7 +14,6 @@ const router = useRouter();
 const loading = ref(false);
 // 上传头像的URL
 const imageUrl = ref("");
-const uploadRef = ref(null)
 // 注册表单
 const form = reactive({
   username: "",
@@ -52,11 +50,9 @@ const onSubmit = async () => {
   loading.value = true;
   let res;
   try {
-    // 上传头像
-    uploadRef.value.submit()
     res = await register({
       username: form.username,
-      password: md5(form.password1),
+      password: form.password1,
       nickname: form.nickname,
       school: Number(form.school),
       gender: form.gender,
@@ -107,7 +103,6 @@ const handleSchoolChange = (v) => {
   <el-form ref="formRef" :model="form" label-width="120px">
     <el-form-item label=" " justify="center">
       <el-upload
-        ref="uploadRef"
         class="avatar-uploader"
         :action="`${HOST}/files/avatar`"
         :show-file-list="false"
@@ -159,7 +154,7 @@ const handleSchoolChange = (v) => {
       >
     </el-form-item>
     <el-form-item>
-      <el-link href="#/login">已有账户，去登录</el-link>
+      <el-link href="/login">已有账户，去登录</el-link>
     </el-form-item>
   </el-form>
 </template>

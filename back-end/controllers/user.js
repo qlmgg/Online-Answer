@@ -2,11 +2,12 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:21:41 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-22 16:46:24
+ * @Last Modified time: 2022-04-27 13:08:21
  */
 
 import { readFileSync } from 'fs'
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs'
 import User from '../models/user.js'
 import message from '../message/index.js'
 
@@ -84,6 +85,8 @@ class UserCtl {
             ctx.body = { code: -1, msg: message.UserExisted }
             return
         }
+        // 处理密码
+        ctx.request.body.password = bcrypt.hashSync(ctx.request.body.password, 10)
         const _user = await new User(ctx.request.body).save()
         ctx.body = { code: 0, msg: message.CreateSuccess, data: _user }
     }
@@ -158,8 +161,12 @@ class UserCtl {
             password: { type: 'string', required: true }
         })
         const { username, password } = ctx.request.body
-        const user = await User.findOne({ username, password })
+        const user = await User.findOne({ username }).select('+password')
         if (!user) {
+            ctx.body = { code: -1, msg: message.UserNotFound }
+            return
+        }
+        if (!bcrypt.compareSync(password, user.password)) {
             ctx.body = { code: -1, msg: message.LoginFailed }
             return
         }
@@ -204,11 +211,12 @@ class UserCtl {
             ctx.body = { code: -1, msg: message.UserNotFound }
             return
         }
-        if (user.password !== pwd) {
+        if (!bcrypt.compareSync(pwd, user.password)) {
             ctx.body = { code: -1, msg: message.IncorrectPassword }
             return
         }
-        await User.findByIdAndUpdate(id, { password })
+        const _password = bcrypt.hashSync(password, 10)
+        await User.findByIdAndUpdate(id, { password: _password })
         ctx.body = { code: 0, msg: message.UpdateSuccess }
     }
 }

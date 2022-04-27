@@ -11,6 +11,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "^1.1.1",
     "axios": "^0.26.1",
+    "bcryptjs": "^2.4.3",
     "echarts": "^5.3.1",
     "element-plus": "^2.0.5",
     "face-api.js": "^0.22.2",
@@ -22,6 +23,7 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "@types/js-md5": "^0.4.3",
     "@types/lodash-es": "^4.17.6",
     "@vitejs/plugin-vue": "^2.2.0",

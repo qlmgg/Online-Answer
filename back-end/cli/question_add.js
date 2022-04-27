@@ -46,7 +46,7 @@ fileContent.forEach(v => {
 })
 
 // 登录admin账户
-const r1 = await axios.post('http://localhost:4000/users/login', { username: 'admin', password: md5('admin') })
+const r1 = await axios.post('http://localhost:4000/users/login', { username: 'admin', password: 'admin' })
 const token = r1.headers.authorization
 // 获取教师列表
 const r2 = await axios.get('http://localhost:4000/users?role=1', { headers: { Authorization: 'Bearer ' + token } })

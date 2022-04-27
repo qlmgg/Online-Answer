@@ -1,7 +1,6 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { useStore } from "vuex";
-import md5 from "js-md5";
 
 import SchoolSelect from "@/components/SchoolSelect.vue";
 import { updateUser, updatePwd } from "@/request/api.js";
@@ -88,8 +87,8 @@ const handleUpdatePwd = async () => {
   const res = await updatePwd({
     id: user._id,
     data: {
-      pwd: md5(editPwd.pwd),
-      new: md5(editPwd.pwd1),
+      pwd: editPwd.pwd,
+      new: editPwd.pwd1,
     },
   });
   if (res.code === 0) {

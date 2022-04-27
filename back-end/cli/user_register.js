@@ -2,7 +2,6 @@ import { readFileSync } from 'fs'
 import { faker } from '@faker-js/faker'
 import { basename } from 'path'
 import axios from 'axios'
-import md5 from 'js-md5'
 import minimist from 'minimist'
 
 if (process.argv.length === 2) {
@@ -53,7 +52,7 @@ for (let i = 0; i < count; i++) {
     const user = {
         nickname: `${lastName}${firstName}`,
         username: username,
-        password: md5(username),
+        password: username,
         gender: gender === 'Male' ? 1 : 0,
         avatar,
         role,
