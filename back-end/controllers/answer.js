@@ -2,12 +2,13 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:05:23 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-26 22:02:30
+ * @Last Modified time: 2022-04-27 15:55:04
  */
 
 import Answer from '../models/answer.js'
 import Exampaper from '../models/exampaper.js'
 import Question from '../models/question.js'
+import RankingList from '../models/rankinglist.js'
 import message from '../message/index.js'
 
 class AnswerCtl {
@@ -136,18 +137,6 @@ class AnswerCtl {
         ctx.body = { code: 0, msg: message.QuerySuccess, data: answer }
     }
 
-    // 根据ExampaperID和UserID查询答卷
-    // async findById(ctx) {
-    //     const { exampaper, user, page = 1 } = ctx.query
-    //     const skip = (page - 1) * 10
-    //     const answers = await Answer
-    //         .find({ exampaper, user })
-    //         .skip(skip)
-    //         .limit(10)
-    //         .populate(['user', 'exampaper'])
-    //     ctx.body = { code: 0, msg: message.QuerySuccess, data: answers }
-    // }
-
     // 创建回答
     async create(ctx) {
         // 校验参数
@@ -202,6 +191,20 @@ class AnswerCtl {
             score
         }
         const { _id } = await new Answer(data).save()
+        // 统计答卷到排行榜
+        await new RankingList({
+            user,
+            type: 'paper',
+            date: Date.now(),
+            count: 1
+        }).save()
+        // 统计答题到排行榜
+        await new RankingList({
+            user,
+            type: 'question',
+            date: Date.now(),
+            count: answers.length
+        }).save()
         // 返回结果
         const result = {
             score,

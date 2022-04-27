@@ -46,7 +46,7 @@ const handleLogout = () => {
           :ellipsis="false"
         >
           <el-menu-item index="/">主页</el-menu-item>
-          <el-menu-item index="/rank">排行榜</el-menu-item>
+          <el-menu-item index="/RankingList">排行榜</el-menu-item>
           <el-menu-item index="/Search">
             <el-icon>
               <search />

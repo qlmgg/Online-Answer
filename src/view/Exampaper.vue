@@ -186,15 +186,16 @@ const handleDeleteComment = async (comment, index) => {
       </el-descriptions-item>
     </el-descriptions>
     <el-row justify="center" style="padding: 32px 0">
-      <el-link
-        :href="`/answer/${id}`"
+      <router-link
+        :to="`/answer/${id}`"
+        class="link"
         v-if="
           exampaper.info.multi_answer ||
           (!exampaper.info.multi_answer && !exampaper.answers.length)
         "
       >
         <el-button type="primary" size="large" :icon="Edit">开始答题</el-button>
-      </el-link>
+      </router-link>
       <el-button v-else type="primary" size="large" :icon="Edit" disabled
         >您已完成答题</el-button
       >

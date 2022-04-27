@@ -95,3 +95,6 @@ export const getHotWords = () => request.get('/hotwords')
 
 // 搜索
 export const search = ({ keywords = '', type = 0, limit = 10, page = 1 } = {}) => request.get(`/hotwords/search?keywords=${keywords}&type=${type}&page=${page}&limit=${limit}`)
+
+// 排行榜
+export const getRankingList = ({ rankDate = 'today', rankType = 'paper' } = {}) => request.get(`/rankinglist?rankType=${rankType}&rankDate=${rankDate}`)

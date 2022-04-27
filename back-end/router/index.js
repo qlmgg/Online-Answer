@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:27:48 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-26 18:09:57
+ * @Last Modified time: 2022-04-27 15:09:43
  */
 
 import Router from 'koa-router'
@@ -16,6 +16,7 @@ import FilesRouter from './files/index.js'
 import StatusRouter from './status/index.js'
 import BannersRouter from './banners/index.js'
 import HotWordsRouter from './hotwords/index.js'
+import RankingListRouter from './rankinglist/index.js'
 
 const router = new Router()
 
@@ -28,5 +29,6 @@ router.use('/files', FilesRouter.routes())
 router.use('/status', StatusRouter.routes())
 router.use('/banners', BannersRouter.routes())
 router.use('/hotwords', HotWordsRouter.routes())
+router.use('/rankinglist', RankingListRouter.routes())
 
 export default router

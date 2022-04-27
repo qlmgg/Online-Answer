@@ -21,6 +21,8 @@ const routes = [
     { path: '/search', name: 'Search', component: () => import('@/view/Search.vue') },
     // 题目详情页面路由
     { path: '/question/:id', name: 'Question', component: () => import('@/view/Question.vue') },
+    // 排行榜页面路由
+    { path: '/rankinglist', name: 'RankingList', component: () => import('@/view/RankingList.vue') },
 
     // 个人中心页面路由
     {

@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:26:23 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-26 21:22:03
+ * @Last Modified time: 2022-04-27 15:54:52
  */
 
 import jwt from 'jsonwebtoken'
@@ -19,7 +19,7 @@ const authList = [
     { pattern: /\/comments/, method: 'DELETE', role: 0 },   // 删除评论
     { pattern: /\/questions/, method: 'GET', role: 1 },     // 获取题目列表
     { pattern: /\/questions/, method: 'DELETE', role: 1 },  // 删除题目
-    { pattern: /\/answer/, method: 'GET', role: 0 },        // 获取答卷列表
+    { pattern: /\/answers/, method: 'GET', role: 0 },       // 获取答卷列表
     { pattern: /\/banners/, method: 'POST', role: 2 },      // 增加Banner
     { pattern: /\/banners/, method: 'PUT', role: 2 },       // 更新Banner
     { pattern: /\/banners/, method: 'DELETE', role: 2 },    // 删除Banner
