@@ -1,5 +1,4 @@
 <script setup>
-import { reactive, ref } from "vue";
 import _school from "@/assets/school.json";
 
 // defineProps和defineEmits是编译器宏，不需要从vue中导入

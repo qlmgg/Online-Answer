@@ -1,10 +1,7 @@
 <script setup>
-import { reactive, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import { Check, Minus, Close } from "@element-plus/icons-vue";
-
 import QuestionCard from "@/components/QuestionCard.vue";
-import { getAnswer, getPaperInfo } from "@/request/api.js";
+import { getAnswer, getPaperInfo } from "@/api/index.js";
 
 const route = useRoute();
 const router = useRouter();

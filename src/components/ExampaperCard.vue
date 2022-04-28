@@ -3,9 +3,7 @@
 const props = defineProps({
   exam: Object,
 });
-
-// 解构exam对象
-const { exam } = props;
+const exam = reactive(props.exam);
 </script>
 
 <template>

@@ -1,6 +1,4 @@
 <script setup>
-import { onMounted, ref } from "vue";
-
 const props = defineProps({
   banners: Array,
   autoplay: {
@@ -9,7 +7,8 @@ const props = defineProps({
   },
 });
 const emits = defineEmits(["change", "setActiveItem"]);
-const { banners, autoplay } = props;
+const banners = reactive(props.banners);
+const autoplay = ref(props.autoplay);
 const bannerElement = ref(null);
 // banner切换时，通知父组件
 const handleChange = (newIndex, oldIndex) => {

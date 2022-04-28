@@ -1,12 +1,8 @@
 <script setup>
-import { ref, reactive } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import { Plus, Edit } from "@element-plus/icons-vue";
-
 import SchoolSelect from "@/components/SchoolSelect.vue";
-import { register } from "@/request/api.js";
-import { HOST } from "@/request/service.js";
+import { register } from "@/api/index.js";
+import { HOST } from "@/utils/request.js";
 
 const store = useStore();
 const router = useRouter();

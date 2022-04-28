@@ -15,7 +15,6 @@ export default {
     UploadSuccess: '上传成功',
     QuestionExisted: '题目已存在',
     QuestionNotFound: '题目不存在',
-    UserNotFound: '用户不存在',
     UserExisted: '用户已存在',
     LoginFailed: '登录失败，用户名或密码错误！',
     LoginSuccess: '登录成功',

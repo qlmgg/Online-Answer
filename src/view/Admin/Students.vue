@@ -1,7 +1,7 @@
 <script setup>
-import Users from "@/components/Users.vue";
+import BaseUsers from "@/components/BaseUsers.vue";
 </script>
 
 <template>
-  <Users :role="0" />
+  <BaseUsers :role="0" />
 </template>

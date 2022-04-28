@@ -1,10 +1,7 @@
 <script setup>
-import { reactive, ref } from "vue";
-import { getPapers } from "@/request/api.js";
-
-import ExamCard from "@/components/ExamCard.vue";
-import Banner from "@/components/Banner.vue";
-import { getBanner } from "@/request/api.js";
+import ExampaperCard from "@/components/ExampaperCard.vue";
+import BaseBanner from "@/components/BaseBanner.vue";
+import { getBanner, getPapers } from "@/api/index.js";
 
 // 是否正在加载数据
 const loading = ref(true);
@@ -48,7 +45,7 @@ getExampaper();
 
 <template>
   <!-- banner -->
-  <Banner :banners="banners" :key="banners.length" />
+  <BaseBanner :banners="banners" :key="banners.length" />
 
   <!-- 骨架屏 -->
   <el-skeleton :loading="loading">
@@ -72,20 +69,17 @@ getExampaper();
   </el-skeleton>
 
   <!-- 试卷列表 -->
-  <el-row
-    v-if="!loading"
-    :gutter="20"
-    v-for="i in Math.ceil(exams.length / 4)"
-    :key="i"
-  >
-    <el-col
-      :span="6"
-      v-for="exam in exams.slice((i - 1) * 4, (i - 1) * 4 + 4)"
-      :key="exam.id"
-    >
-      <ExamCard :exam="exam" :key="exam" />
-    </el-col>
-  </el-row>
+  <template v-if="!loading">
+    <el-row :gutter="20" v-for="i in Math.ceil(exams.length / 4)" :key="i">
+      <el-col
+        :span="6"
+        v-for="exam in exams.slice((i - 1) * 4, (i - 1) * 4 + 4)"
+        :key="exam.id"
+      >
+        <ExampaperCard :exam="exam" :key="exam" />
+      </el-col>
+    </el-row>
+  </template>
 
   <!-- 分页器 -->
   <el-pagination

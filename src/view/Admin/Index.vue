@@ -1,8 +1,6 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
 import * as echarts from "echarts";
-
-import { getStatus } from "@/request/api.js";
+import { getStatus } from "@/api/index.js";
 
 // 图表的ref
 const myChartsRefs = {

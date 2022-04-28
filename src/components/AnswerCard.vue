@@ -3,7 +3,7 @@ import { id2time } from "@/utils/index.js";
 const props = defineProps({
   answer: Object,
 });
-const { answer } = props;
+const answer = reactive(props.answer)
 </script>
 
 <template>

@@ -1,9 +1,7 @@
 <script setup>
-import { reactive, ref } from "vue";
-import { useStore } from "vuex";
 import { QuestionFilled } from "@element-plus/icons-vue";
 import QuestionCard from "@/components/QuestionCard.vue";
-import { postQuestion } from "@/request/api.js";
+import { postQuestion } from "@/api/index.js";
 
 const user = useStore().state.user;
 

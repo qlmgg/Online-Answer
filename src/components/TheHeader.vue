@@ -1,10 +1,6 @@
 <script setup>
-import { ref } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import { Male, Female, Search, UserFilled } from "@element-plus/icons-vue";
-
-import { logout } from "@/request/api.js";
+import { logout } from "@/api/index.js";
 
 const store = useStore();
 const router = useRouter();
@@ -15,7 +11,7 @@ const shadow = ref(false);
 // 退出登录
 const handleLogout = () => {
   console.log(store.state.user);
-  logout().then((res) => {
+  logout().then(() => {
     ElMessage({
       message: "已退出",
       type: "success",
@@ -110,5 +106,9 @@ header {
 }
 .el-menu {
   border-bottom: none;
+}
+
+:deep(.el-menu-item [class^="el-icon"]) {
+  margin-right: 0;
 }
 </style>

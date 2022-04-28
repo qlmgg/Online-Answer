@@ -1,8 +1,5 @@
 <script setup>
-import { useRoute } from "vue-router";
-import { reactive } from "vue";
-
-import { getQuestionsById } from "@/request/api.js";
+import { getQuestionsById } from "@/api/index.js";
 import { computeAnswerIndex } from "@/utils/compute.js";
 
 const route = useRoute();

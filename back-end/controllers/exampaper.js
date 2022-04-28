@@ -2,12 +2,11 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:15:50 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-13 21:06:32
+ * @Last Modified time: 2022-04-28 14:27:14
  */
 
 import Exampaper from '../models/exampaper.js'
 import Question from '../models/question.js'
-import Answer from '../models/answer.js'
 import message from '../message/index.js'
 
 class ExampaperCtl {

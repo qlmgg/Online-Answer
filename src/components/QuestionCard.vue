@@ -1,6 +1,4 @@
 <script setup>
-import { reactive, ref, watchEffect, watch } from "vue";
-import { useStore } from "vuex";
 import { cloneDeep, debounce } from "lodash";
 import { Delete, Plus } from "@element-plus/icons-vue";
 import md5 from "js-md5";
@@ -82,6 +80,7 @@ watch(
             <el-input
               v-model="question.title"
               v-if="editable && !isCloud"
+              maxlength="200"
               placeholder="题目"
             />
             <span style="font-weight: bold; margin-left: 16px" v-else>
@@ -122,6 +121,7 @@ watch(
             v-model="question.option[i]"
             v-if="editable && !isCloud"
             :placeholder="'选项' + (i + 1)"
+            maxlength="200"
           >
             <template #append>
               <el-button
@@ -152,6 +152,7 @@ watch(
               v-model="question.option[i]"
               v-if="editable && !isCloud"
               :placeholder="'选项' + (i + 1)"
+              maxlength="200"
             >
               <template #append>
                 <el-button
@@ -171,8 +172,10 @@ watch(
       <el-input
         class="item"
         v-model="answer"
-        :placeholder="editable ? '请输入参考答案' : '请作答'"
+        :placeholder="editable ? '请输入参考答案(最大长度500个字符)' : '请作答'"
         :disabled="(editable && isCloud) || disabled"
+        maxlength="500"
+        type="textarea"
       ></el-input>
       <br />
       <el-input
@@ -185,7 +188,12 @@ watch(
       </el-input>
     </template>
     <el-button
-      v-if="editable && !isCloud && question.option.length < 4 && question.type !== 2"
+      v-if="
+        editable &&
+        !isCloud &&
+        question.option.length < 4 &&
+        question.type !== 2
+      "
       @click="addOption"
       :icon="Plus"
     >

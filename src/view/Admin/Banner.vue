@@ -1,13 +1,11 @@
 <script setup>
-import { reactive, ref } from "vue";
-
 import Banner from "@/components/Banner.vue";
 import {
   getBanner,
   postBanner,
   updateBanner,
   deleteBanner,
-} from "@/request/api.js";
+} from "@/api/index.js";
 
 const index = ref(0);
 const bannerElement = ref(null);

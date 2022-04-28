@@ -1,14 +1,6 @@
 <script setup>
 import { debounce } from "lodash";
-import { useStore } from "vuex";
-import { reactive, ref, onMounted, onUnmounted } from "vue";
-
-import {
-  getUsers,
-  deleteUser,
-  deleteUsers,
-  updateUser,
-} from "@/request/api.js";
+import { getUsers, deleteUser, deleteUsers, updateUser } from "@/api/index.js";
 import SchoolSelect from "@/components/SchoolSelect.vue";
 import school from "@/assets/school.json";
 
@@ -347,6 +339,7 @@ handleGetUsers();
       </el-scrollbar>
     </el-main>
 
+    <!-- 分页器 -->
     <el-pagination
       :page-size="10"
       :total="total"
@@ -356,9 +349,11 @@ handleGetUsers();
       @current-change="handleChange"
     />
   </el-container>
+
+  <!-- 编辑用户信息 -->
   <el-dialog v-model="showEditView" title="编辑用户信息">
     <el-form>
-      <el-form-item label="用户ID">
+      <el-form-item label="用户ID" label-width="80px">
         <el-tooltip
           class="box-item"
           effect="dark"
@@ -368,20 +363,28 @@ handleGetUsers();
           <el-input autocomplete="off" v-model="editUserInfo._id" disabled />
         </el-tooltip>
       </el-form-item>
-      <el-form-item label="用户名">
-        <el-input autocomplete="off" v-model="editUserInfo.username" />
+      <el-form-item label="用户名" label-width="80px">
+        <el-input
+          autocomplete="off"
+          maxlength="20"
+          v-model="editUserInfo.username"
+        />
       </el-form-item>
-      <el-form-item label="昵称">
-        <el-input autocomplete="off" v-model="editUserInfo.nickname" />
+      <el-form-item label="昵称" label-width="80px">
+        <el-input
+          autocomplete="off"
+          maxlength="12"
+          v-model="editUserInfo.nickname"
+        />
       </el-form-item>
-      <el-form-item label="角色">
+      <el-form-item label="角色" label-width="80px">
         <el-select v-model="editUserInfo.role">
           <el-option :value="0" label="学生"></el-option>
           <el-option :value="1" label="教师"></el-option>
           <el-option :value="2" label="管理员"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="学校">
+      <el-form-item label="学校" label-width="80px">
         <SchoolSelect
           :value="editUserInfo.school"
           @schoolChange="handleSchoolChange"

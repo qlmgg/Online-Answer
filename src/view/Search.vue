@@ -1,11 +1,8 @@
 <script setup>
-import { reactive, ref, watch } from "vue";
 import { Search } from "@element-plus/icons-vue";
-
-import { getHotWords, search } from "@/request/api.js";
+import { getHotWords, search } from "@/api/index.js";
 import { id2time } from "@/utils/index.js";
 import { onBeforeRouteLeave } from "vue-router";
-import { useStore } from "vuex";
 
 // 搜索类型
 const searchType = ref(0);

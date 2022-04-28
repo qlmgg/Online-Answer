@@ -1,9 +1,6 @@
 <script setup>
-import { watch } from "vue";
-import { useStore } from "vuex";
-
-import Header from "@/components/Header.vue";
-import Footer from "@/components/Footer.vue";
+import TheHeader from "@/components/TheHeader.vue";
+import TheFooter from "@/components/TheFooter.vue";
 
 const store = useStore();
 
@@ -31,7 +28,9 @@ if (user) {
       message: `欢迎你，${n.nickname}！`,
       type: "success",
     });
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 }
 // 监听user变化，并存到本地
 watch(
@@ -47,11 +46,11 @@ watch(
 </script>
 
 <template>
-  <Header />
+  <TheHeader />
   <div class="container">
     <router-view></router-view>
   </div>
-  <Footer />
+  <TheFooter />
 </template>
 
 <style lang="less">

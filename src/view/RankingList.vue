@@ -1,7 +1,5 @@
 <script setup>
-import { reactive, ref } from "vue";
-
-import { getRankingList } from "@/request/api.js";
+import { getRankingList } from "@/api/index.js";
 
 // 排行榜类别
 const rankType = ref("paper");

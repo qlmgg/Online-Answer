@@ -1,4 +1,4 @@
-import request from './service.js'
+import request from '@/utils/request.js'
 
 // 获取考卷
 export const getPapers = ({ page = 1, from = '', limit = 8, keywords = '' }) => request.get(`/papers?page=${page}&from=${from}&limit=${limit}&keywords=${keywords}`)
@@ -7,7 +7,7 @@ export const getPapers = ({ page = 1, from = '', limit = 8, keywords = '' }) => 
 export const deletePaper = (id = '') => request.delete(`/papers/${id}`)
 
 // 更新考卷
-export const updatePaper = (data = {}) => request.put(`/papers/${id}`, data)
+export const updatePaper = (id = '', data = {}) => request.put(`/papers/${id}`, data)
 
 // 添加考卷
 export const addPaper = (data = {}) => request.post(`/papers`, data)

@@ -1,17 +1,14 @@
 <script setup>
-import { ref, reactive } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import { VueDraggableNext } from "vue-draggable-next";
 import { InfoFilled, Delete, MostlyCloudy } from "@element-plus/icons-vue";
 import { debounce } from "lodash";
 import QuestionCard from "@/components/QuestionCard.vue";
-import { getQuestions, addPaper } from "@/request/api.js";
+import { getQuestions, addPaper } from "@/api/index.js";
 
 const user = useStore().state.user;
 const router = useRouter();
 
-const step = ref(0);
+const step = ref(1);
 
 // 搜索题目关键词
 const keywords = ref("");
@@ -40,8 +37,8 @@ const handleSearch = debounce(async () => {
 
 // step1: 试卷基本信息
 const baseinfo = reactive({
-  title: "测试卷",
-  description: "这是一张测试卷。",
+  title: "",
+  description: "",
   subject: "0",
   time: [Date.now(), Date.now() + 7 * 86400 * 1000],
   strict: false,
@@ -171,10 +168,19 @@ const resetAll = () => {
         <el-space fill wrap :size="20">
           <el-card>
             <el-form-item label="试卷名称">
-              <el-input v-model="baseinfo.title" />
+              <el-input
+                v-model="baseinfo.title"
+                placeholder="输入试卷标题"
+                maxlength="100"
+              />
             </el-form-item>
             <el-form-item label="试卷描述">
-              <el-input v-model="baseinfo.description" />
+              <el-input
+                v-model="baseinfo.description"
+                type="textarea"
+                maxlength="500"
+                placeholder="输入试卷描述，最大长度500个字符"
+              />
             </el-form-item>
             <!-- <el-form-item label="学科分类">
               <el-select v-model="baseinfo.subject">

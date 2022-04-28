@@ -1,8 +1,8 @@
 /*
  * @Author: openrhc 
  * @Date: 2022-04-08 22:26:50 
- * @Last Modified by:   openrhc 
- * @Last Modified time: 2022-04-08 22:26:50 
+ * @Last Modified by: openrhc
+ * @Last Modified time: 2022-04-28 15:02:40
  */
 
 import mongoose from "mongoose";
@@ -25,7 +25,7 @@ const questionSchema = new Schema({
     // 答案
     answer: {
         type: String,
-        maxlength: 32
+        maxlength: 500
     },
     // 题型
     type: {

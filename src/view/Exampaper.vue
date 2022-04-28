@@ -1,7 +1,4 @@
 <script setup>
-import { reactive, ref } from "vue";
-import { useRoute } from "vue-router";
-import { useStore } from "vuex";
 import {
   Edit,
   Share,
@@ -17,7 +14,7 @@ import {
   getAnswers,
   postComment,
   deleteComment,
-} from "@/request/api.js";
+} from "@/api/index.js";
 import { id2time } from "@/utils/index.js";
 
 const route = useRoute();

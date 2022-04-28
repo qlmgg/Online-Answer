@@ -1,11 +1,8 @@
 <script setup>
-import { reactive, ref } from "vue";
-import { useStore } from "vuex";
 import { UserFilled } from "@element-plus/icons-vue";
-
 import SchoolSelect from "@/components/SchoolSelect.vue";
-import { updateUser, updatePwd } from "@/request/api.js";
-import { HOST } from "@/request/service.js";
+import { updateUser, updatePwd } from "@/api/index.js";
+import { HOST } from "@/utils/request.js";
 
 const store = useStore();
 const user = store.state.user;

@@ -1,5 +1,5 @@
 <script setup>
-import { getWrongs } from "@/request/api.js";
+import { getWrongs } from "@/api/index.js";
 import { Close } from "@element-plus/icons-vue";
 
 import { reactive, ref } from "vue";

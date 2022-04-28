@@ -1,19 +1,15 @@
 <script setup>
-import md5 from "js-md5";
-import { useStore } from "vuex";
-import { shuffle, debounce } from "lodash";
+import { onBeforeRouteLeave } from "vue-router";
+import { shuffle } from "lodash";
 import * as faceapi from "face-api.js";
-import { ref, reactive, onUnmounted, onMounted, onBeforeUnmount } from "vue";
-import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 
 import { getCamera, sleep } from "@/utils/index.js";
-import { getPaperInfo, getQuestions, postAnswer } from "@/request/api.js";
+import { getPaperInfo, getQuestions, postAnswer } from "@/api/index.js";
 
 import QuestionCard from "@/components/QuestionCard.vue";
 
 const route = useRoute();
 const store = useStore();
-const router = useRouter();
 
 const paper = reactive({
   info: null, // 试卷信息

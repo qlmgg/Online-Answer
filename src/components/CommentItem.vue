@@ -1,6 +1,5 @@
 <script setup>
 import { Male, Female, UserFilled } from "@element-plus/icons-vue";
-
 import { id2time, friendlyTime } from "@/utils/index.js";
 import School from "@/assets/school.json";
 
@@ -9,8 +8,7 @@ const props = defineProps({
   comment: Object,
 });
 
-// 解构comment对象
-const { comment } = props;
+const comment = reactive(props.comment);
 </script>
 
 <template>

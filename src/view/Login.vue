@@ -1,9 +1,5 @@
 <script setup>
-import { reactive, ref } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
-
-import { login } from "@/request/api.js";
+import { login } from "@/api/index.js";
 
 const store = useStore();
 const router = useRouter();

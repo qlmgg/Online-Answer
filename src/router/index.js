@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 import Home from '@/view/Home.vue'
 
@@ -26,9 +26,11 @@ const routes = [
 
     // 个人中心页面路由
     {
-        path: '/center', name: 'Center', component: () => import('@/view/Center.vue'),
+        path: '/center',
+        name: 'Center',
+        component: () => import('@/view/Center.vue'),
         children: [
-            { path: '', component: () => import('@/view/Center/BaseInfo.vue') },
+            { path: '', component: () => import('@/view/Center/Info.vue') },
             { path: 'papers', component: () => import('@/view/Center/Papers.vue') },
             { path: 'questions', component: () => import('@/view/Center/Questions.vue') },
             { path: 'collects', component: () => import('@/view/Center/Collects.vue') },
@@ -37,7 +39,8 @@ const routes = [
 
     // 后台路由
     {
-        path: '/admin', name: 'Admin',
+        path: '/admin',
+        name: 'Admin',
         component: () => import('@/view/Admin.vue'),
         children: [
             { path: '', component: () => import('@/view/Admin/Index.vue') },

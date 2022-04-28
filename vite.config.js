@@ -1,23 +1,39 @@
 import { join } from 'path'
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import Vue from '@vitejs/plugin-vue'
 
-// 自动导入ElementPlus
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import legacy from '@vitejs/plugin-legacy'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
   plugins: [
-    vue(),
+    Vue(),
     AutoImport({
+      // 自动导入vue vue-router vuex 的api
+      imports: ['vue', 'vue-router', 'vuex'],
+      // 解决eslint错误
+      eslintrc: {
+        enabled: true,
+        filepath: './.eslintrc-auto-import.json',
+        globalsPropValue: true
+      },
       resolvers: [ElementPlusResolver()],
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      // 解析器
+      resolvers: [
+        // 自动导入element-plus组件
+        ElementPlusResolver()
+      ],
     }),
+    // 传统浏览器支持
+    legacy({
+      targets: ['defaults', 'not IE 11']
+    })
   ],
   resolve: {
     alias: {

@@ -1,8 +1,6 @@
 <script setup>
-import { reactive, ref, onMounted, onUnmounted } from "vue";
-import { getQuestions, deleteQuestion, updateQuestion } from "@/request/api.js";
+import { getQuestions, deleteQuestion, updateQuestion } from "@/api/index.js";
 import { debounce } from "lodash";
-
 import QuestionCaed from "@/components/QuestionCard.vue";
 import { computeAnswerIndex } from "@/utils/compute.js";
 
@@ -398,7 +396,7 @@ handleGetQuestions();
       @current-change="handleChange"
     />
   </el-container>
-  <el-dialog v-model="showEditView" title="编辑题目信息" customClass="width75">
+  <el-dialog v-model="showEditView" title="编辑题目信息" width="60%">
     <QuestionCaed
       :question="editQuestion"
       :editable="true"

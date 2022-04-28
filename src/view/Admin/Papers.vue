@@ -1,6 +1,5 @@
 <script setup>
-import { reactive, ref, onMounted, onUnmounted } from "vue";
-import { getPapers, deletePaper, updatePaper } from "@/request/api.js";
+import { getPapers, deletePaper, updatePaper } from "@/api/index.js";
 import { debounce } from "lodash";
 import SchoolSelect from "@/components/SchoolSelect.vue";
 import school from "@/assets/school.json";

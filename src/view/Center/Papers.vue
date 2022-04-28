@@ -1,5 +1,5 @@
 <script setup>
-import { getAnswers } from "@/request/api.js";
+import { getAnswers } from "@/api/index.js";
 import { reactive, ref } from "vue";
 import { useStore } from "vuex";
 

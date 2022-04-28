@@ -5,7 +5,6 @@ import {
   Paperclip,
   ToiletPaper,
 } from "@element-plus/icons-vue";
-import { useStore } from "vuex";
 const user = useStore().state.user;
 </script>
 

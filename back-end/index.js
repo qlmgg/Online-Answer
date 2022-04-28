@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:28:06 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-27 14:04:53
+ * @Last Modified time: 2022-04-28 14:01:05
  */
 
 import { join } from 'path'
@@ -19,6 +19,7 @@ import Status from './middleware/Status.js'
 import MiddlewareLogger from './middleware/Logger.js'
 import Authorization from './middleware/Authorization.js'
 
+// eslint-disable-next-line
 import db from './db.js'
 import Logger from './utils/logger.js'
 
