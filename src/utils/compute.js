@@ -42,3 +42,18 @@ export const computeAnswerIndex = (question) => {
         return question.answer
     }
 };
+
+/**
+ * 计算试卷状态
+ * @param {array} time [开始时间，结束时间]
+ * @returns 试卷状态：0 未开始 1 已结束 2 进行中
+ */
+export const computePaperState = (time = [0, 0]) => {
+    const now = Date.now();
+    if (now < time[0]) {
+        return 0;
+    } else if (now > time[1]) {
+        return 1
+    }
+    return 2
+}

@@ -7,9 +7,11 @@ import { getCamera, sleep } from "@/utils/index.js";
 import { getPaperInfo, getQuestions, postAnswer } from "@/api/index.js";
 
 import QuestionCard from "@/components/QuestionCard.vue";
+import { computePaperState } from "@/utils/compute.js";
 
 const route = useRoute();
 const store = useStore();
+const router = useRouter();
 
 const paper = reactive({
   info: null, // 试卷信息
@@ -22,6 +24,8 @@ const paper = reactive({
 const { id } = route.params;
 // 交卷loading
 const loading = ref(false);
+// 题目加载loading
+const questionsLoading = ref(true);
 // 计时器
 let timer = null;
 let cameraTimer = null;
@@ -100,7 +104,8 @@ const releaseCamera = () => {
 
 // 路由守卫
 onBeforeRouteLeave((to, from) => {
-  if (paper.score !== null) {
+  // 答卷完成，或试卷没加载出来
+  if (paper.score !== null || !paper.info) {
     return true;
   }
   const msg = paper.info.multi_answer
@@ -129,6 +134,12 @@ onMounted(() => {
   (async () => {
     // 查询考卷详情
     const _paper = await getPaperInfo(id);
+    // 试卷不在进行中
+    if (computePaperState(_paper.data.time) !== 2) {
+      ElMessage('本试卷不在答题日期内，无法答题！')
+      router.push(`/exampaper/${id}`);
+      return;
+    }
     paper.info = _paper.data;
     remaining_time.value = paper.info.total_time * 60;
     // 如果启用严格模式
@@ -221,6 +232,7 @@ onMounted(() => {
     }
     // 查询考卷题目
     const _questions = await getQuestions({ exampaper: id });
+    questionsLoading.value = false;
     // 判断是否需要乱序
     if (paper.info.disorder) {
       // 调用shuffle洗牌算法，将题目打乱
@@ -270,7 +282,7 @@ onMounted(() => {
     }"
     v-if="paper.info && paper.score === null"
   >
-    <el-col :span="16" class="question">
+    <el-col :span="16" class="question" v-loading="questionsLoading">
       <div class="wrap">
         <h1>{{ paper.info.title }}</h1>
         <p>
@@ -367,14 +379,12 @@ onMounted(() => {
         :sub-title="hasObjectiveQuestion ? '* 仅包含客观题得分' : ''"
       >
         <template #extra>
-          <el-button type="primary" v-if="paper.info.allow_view">
-            <router-link
-              style="color: white"
-              class="link"
-              :to="`/result/${paper.answerId}`"
-            >
-              查看试卷详情
-            </router-link>
+          <el-button
+            type="primary"
+            v-if="paper.info.allow_view"
+            @click="router.replace(`/result/${paper.answerId}`)"
+          >
+            查看试卷详情
           </el-button>
           <el-button type="primary" v-else disabled>
             当前试卷不可查看详情

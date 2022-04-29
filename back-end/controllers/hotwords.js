@@ -65,6 +65,31 @@ class HotWordsCtl {
             return
         }
     }
+
+    async delete(ctx) {
+        const { id } = ctx.params
+        const hotwords = await HotWords.findByIdAndDelete(id)
+        if (!hotwords) {
+            ctx.body = { code: -1, msg: message.HotWordsNotFound }
+            return
+        }
+        ctx.body = { code: 0, msg: message.DeleteSuccess }
+    }
+
+    async create(ctx) {
+        ctx.verifyParams({
+            keywords: { type: 'string', required: true },
+            count: { type: 'number', required: true },
+        })
+        const { keywords, count } = ctx.request.body
+        const hotwords = await HotWords.findOne({ keywords })
+        if (hotwords) {
+            ctx.body = { code: -1, msg: message.HotWordsExisted }
+            return
+        }
+        await new HotWords({ keywords, count }).save()
+        ctx.body = { code: 0, msg: message.CreateSuccess }
+    }
 }
 
 export default new HotWordsCtl()

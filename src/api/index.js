@@ -93,6 +93,12 @@ export const deleteBanner = (id = '') => request.delete(`/banners/${id}`)
 // 热词
 export const getHotWords = () => request.get('/hotwords')
 
+// 删除热词
+export const deleteHotWords = (id = '') => request.delete(`/hotwords/${id}`)
+
+// 增加热词
+export const postHotWords = (data = {}) => request.post(`/hotwords`, data)
+
 // 搜索
 export const search = ({ keywords = '', type = 0, limit = 10, page = 1 } = {}) => request.get(`/hotwords/search?keywords=${keywords}&type=${type}&page=${page}&limit=${limit}`)
 

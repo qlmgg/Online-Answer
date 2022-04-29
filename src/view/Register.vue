@@ -105,6 +105,7 @@ const handleSchoolChange = (v) => {
         :auto-upload="true"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload"
+        accept=".png,.jpg"
       >
         <img v-if="imageUrl" :src="imageUrl" class="avatar" />
         <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>

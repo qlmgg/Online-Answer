@@ -116,7 +116,7 @@ onBeforeRouteLeave((to) => {
   <div v-show="!keywords.length" v-loading="hotLoading">
     <el-row justify="center" style="margin-bottom: 16px">
       <el-col :span="16">
-        <h2># 热搜榜</h2>
+        <h2># 搜索榜</h2>
       </el-col>
     </el-row>
     <!-- {{ searchList }} -->

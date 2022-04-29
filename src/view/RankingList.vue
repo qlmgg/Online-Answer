@@ -2,16 +2,19 @@
 import { getRankingList } from "@/api/index.js";
 
 // 排行榜类别
-const rankType = ref("paper");
+const rankType = ref("question");
 // 排行榜日期
-const rankDate = ref("today");
-const list = reactive([]);
+const rankDate = ref("overall");
+const list = reactive([, , , { _id: "1", user: {} }, { _id: "2", user: {} }]);
+const loading = ref(true);
 
-const handleChange = async (v) => {
+const handleChange = async () => {
+  loading.value = true;
   const res = await getRankingList({
     rankType: rankType.value,
     rankDate: rankDate.value,
   });
+  loading.value = false;
   list.splice(0);
   list.push(...res.data);
 };
@@ -20,78 +23,80 @@ handleChange();
 </script>
 
 <template>
-  <!-- 头部 -->
-  <div class="bg">
-    <el-select class="rank-type" v-model="rankType" @change="handleChange">
-      <el-option value="paper" label="答卷榜"></el-option>
-      <el-option value="question" label="答题榜"></el-option>
-    </el-select>
-    <el-row justify="center">
-      <el-radio-group
-        v-model="rankDate"
-        style="margin: 16px 0"
-        @change="handleChange"
-      >
-        <el-radio-button label="today">今日榜</el-radio-button>
-        <el-radio-button label="week">周榜</el-radio-button>
-        <el-radio-button label="month">月榜</el-radio-button>
-        <el-radio-button label="overall">总榜</el-radio-button>
-      </el-radio-group>
-    </el-row>
-    <!-- 前三名 -->
-    <el-row justify="center" class="top-three">
-      <el-col :span="3" v-if="list[1]" class="no-2">
-        <el-avatar :size="70" :src="list[1].user.avatar"></el-avatar>
-        <span class="nickname">{{ list[1].user.nickname }}</span>
-        <span class="count">{{ list[1].count }}</span>
-      </el-col>
-      <el-col :span="3" v-else class="no-2">
-        <el-avatar :size="70"></el-avatar>
-        <span class="nickname">虚位以待</span>
-        <span class="count">-</span>
-      </el-col>
-      <el-col :span="3" v-if="list[0]" class="no-1">
-        <el-avatar :size="80" :src="list[0].user.avatar"></el-avatar>
-        <span class="nickname">{{ list[0].user.nickname }}</span>
-        <span class="count">{{ list[0].count }}</span>
-      </el-col>
-      <el-col :span="3" v-else class="no-1">
-        <el-avatar :size="80"></el-avatar>
-        <span class="nickname">虚位以待</span>
-        <span class="count">-</span>
-      </el-col>
-      <el-col :span="3" v-if="list[2]" class="no-3">
-        <el-avatar :size="60" :src="list[2].user.avatar"></el-avatar>
-        <span class="nickname">{{ list[2].user.nickname }}</span>
-        <span class="count">{{ list[2].count }}</span>
-      </el-col>
-      <el-col :span="3" v-else class="no-3">
-        <el-avatar :size="60"></el-avatar>
-        <span class="nickname">虚位以待</span>
-        <span class="count">-</span>
-      </el-col>
-    </el-row>
+  <div v-loading="loading" style="display: flex; flex-direction: column">
+    <!-- 头部 -->
+    <div class="bg">
+      <el-select class="rank-type" v-model="rankType" @change="handleChange">
+        <el-option value="paper" label="答卷榜"></el-option>
+        <el-option value="question" label="答题榜"></el-option>
+      </el-select>
+      <el-row justify="center">
+        <el-radio-group
+          v-model="rankDate"
+          style="margin: 16px 0"
+          @change="handleChange"
+        >
+          <el-radio-button label="today">今日榜</el-radio-button>
+          <el-radio-button label="week">周榜</el-radio-button>
+          <el-radio-button label="month">月榜</el-radio-button>
+          <el-radio-button label="overall">总榜</el-radio-button>
+        </el-radio-group>
+      </el-row>
+      <!-- 前三名 -->
+      <el-row justify="center" class="top-three">
+        <el-col :span="3" v-if="list[1]" class="no-2">
+          <el-avatar :size="70" :src="list[1].user.avatar"></el-avatar>
+          <span class="nickname">{{ list[1].user.nickname }}</span>
+          <span class="count">{{ list[1].count }}</span>
+        </el-col>
+        <el-col :span="3" v-else class="no-2">
+          <el-avatar :size="70"></el-avatar>
+          <span class="nickname">虚位以待</span>
+          <span class="count">-</span>
+        </el-col>
+        <el-col :span="3" v-if="list[0]" class="no-1">
+          <el-avatar :size="80" :src="list[0].user.avatar"></el-avatar>
+          <span class="nickname">{{ list[0].user.nickname }}</span>
+          <span class="count">{{ list[0].count }}</span>
+        </el-col>
+        <el-col :span="3" v-else class="no-1">
+          <el-avatar :size="80"></el-avatar>
+          <span class="nickname">虚位以待</span>
+          <span class="count">-</span>
+        </el-col>
+        <el-col :span="3" v-if="list[2]" class="no-3">
+          <el-avatar :size="60" :src="list[2].user.avatar"></el-avatar>
+          <span class="nickname">{{ list[2].user.nickname }}</span>
+          <span class="count">{{ list[2].count }}</span>
+        </el-col>
+        <el-col :span="3" v-else class="no-3">
+          <el-avatar :size="60"></el-avatar>
+          <span class="nickname">虚位以待</span>
+          <span class="count">-</span>
+        </el-col>
+      </el-row>
+    </div>
+    <!-- 其他排名 -->
+    <el-space fill wrap>
+      <el-card v-for="(l, i) in list.slice(3)" :key="l._id" shadow="hover">
+        <div class="item">
+          <span class="index">{{ i + 4 }}</span>
+          <el-avatar :src="l.user.avatar"></el-avatar>
+          <span class="nickname">{{ l.user.nickname }}</span>
+          <span class="count">{{ l.count }}</span>
+        </div>
+      </el-card>
+    </el-space>
+    <!-- 排名为空 -->
+    <el-empty
+      v-if="!loading && list.slice(3).length === 0"
+      description="快来答题，下一个上榜的就是你！"
+    >
+      <router-link to="/" class="link">
+        <el-button type="primary">去答题</el-button>
+      </router-link>
+    </el-empty>
   </div>
-  <!-- 其他排名 -->
-  <el-space fill wrap>
-    <el-card v-for="(l, i) in list.slice(3)" :key="l._id" shadow="hover">
-      <div class="item">
-        <span class="index">{{ i + 4 }}</span>
-        <el-avatar :src="l.user.avatar"></el-avatar>
-        <span class="nickname">{{ l.user.nickname }}</span>
-        <span class="count">{{ l.count }}</span>
-      </div>
-    </el-card>
-  </el-space>
-  <!-- 排名为空 -->
-  <el-empty
-    v-if="list.slice(3).length === 0"
-    description="快来答题，下一个上榜的就是你！"
-  >
-    <router-link to="/" class="link">
-      <el-button type="primary">去答题</el-button>
-    </router-link>
-  </el-empty>
 </template>
 
 <style lang="less" scoped>
@@ -107,6 +112,9 @@ handleChange();
   width: 100px;
 }
 .top-three {
+  .el-avatar {
+    background: rgba(255, 255, 255, 0.6);
+  }
   .el-col {
     display: flex;
     flex-direction: column;

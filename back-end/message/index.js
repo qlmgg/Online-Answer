@@ -25,5 +25,7 @@ export default {
     AnswerNotFound: '答卷不存在',
     BannerNotFound: 'Banner不存在',
     IncorrectPassword: '密码不正确',
-    ResultForbidden: '禁止查看考卷结果'
+    ResultForbidden: '禁止查看考卷结果',
+    HotWordsNotFound: '热词不存在',
+    HotWordsExisted: '热词已存在'
 }

@@ -6,9 +6,7 @@ import QuestionCard from "@/components/QuestionCard.vue";
 import { getQuestions, addPaper } from "@/api/index.js";
 
 const user = useStore().state.user;
-const router = useRouter();
-
-const step = ref(1);
+const step = ref(0);
 
 // 搜索题目关键词
 const keywords = ref("");
@@ -80,6 +78,7 @@ const handleAddQuestion = (questionOrType) => {
       title: "添加成功",
       message: questionOrType.title,
       type: "success",
+      position: "top-left",
     });
     return;
   }
@@ -98,6 +97,7 @@ const handleSort = ({ oldIndex, newIndex }) => {
     title: "排序成功",
     message: `已交换题目${oldIndex + 1}、${newIndex + 1}的顺序`,
     type: "success",
+    position: "top-left",
   });
 };
 // 提交
@@ -115,6 +115,7 @@ const handleAddPaper = async () => {
       title: "成功",
       message: `成功创建：${baseinfo.title}`,
       type: "success",
+      position: "top-left",
     });
     step.value = 3;
   } else {
@@ -122,6 +123,7 @@ const handleAddPaper = async () => {
       title: "失败",
       message: `创建失败：${res.msg}`,
       type: "warning",
+      position: "top-left",
     });
   }
 };
@@ -179,7 +181,8 @@ const resetAll = () => {
                 v-model="baseinfo.description"
                 type="textarea"
                 maxlength="500"
-                placeholder="输入试卷描述，最大长度500个字符"
+                :show-word-limit="true"
+                placeholder="输入试卷描述"
               />
             </el-form-item>
             <!-- <el-form-item label="学科分类">
@@ -305,8 +308,55 @@ const resetAll = () => {
         </el-card>
       </div>
       <div v-show="step === 2">
-        <el-button @click="handleAddPaper" type="primary">提交</el-button>
-
+        <el-card>
+          <template #header>
+            <div class="card-header">
+              <el-tag size="small" style="margin: 0 4px" effect="plain">
+                {{ questions.length }} 道题
+              </el-tag>
+              <el-tag
+                size="small"
+                style="margin: 0 4px"
+                v-show="baseinfo.strict"
+                type="danger"
+                effect="plain"
+              >
+                严格卷
+              </el-tag>
+              <el-tag
+                size="small"
+                style="margin: 0 4px"
+                v-show="baseinfo.allow_comments"
+                effect="plain"
+              >
+                允许评论试卷
+              </el-tag>
+              <el-tag
+                size="small"
+                style="margin: 0 4px"
+                v-show="baseinfo.allow_view"
+                effect="plain"
+              >
+                允许查看考试结果
+              </el-tag>
+              <el-tag size="small" style="margin: 0 4px" effect="plain">
+                {{ baseinfo.total_time }} 分钟
+              </el-tag>
+              <el-tag size="small" effect="plain">
+                {{ new Date(baseinfo.time[0]).toLocaleDateString() }}
+                -
+                {{ new Date(baseinfo.time[1]).toLocaleDateString() }}
+              </el-tag>
+            </div>
+          </template>
+          <h2>
+            {{ baseinfo.title }}
+          </h2>
+          <div style="padding-bottom: 32px">{{ baseinfo.description }}</div>
+          <el-button @click="handleAddPaper" type="primary" size="large">
+            发布试卷
+          </el-button>
+        </el-card>
         <el-card>
           <el-button @click="prev">上一步</el-button>
         </el-card>

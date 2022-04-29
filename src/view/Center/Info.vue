@@ -42,6 +42,7 @@ const handleUpdateUser = async () => {
     title: "Success",
     message: "更新成功",
     type: "success",
+    position: "top-left",
   });
 };
 // 头像文件上传成功事件
@@ -93,6 +94,7 @@ const handleUpdatePwd = async () => {
       title: "Success",
       message: "更新成功",
       type: "success",
+      position: "top-left",
     });
     showEditPwd.value = false;
     editPwd.pwd = "";
@@ -103,6 +105,7 @@ const handleUpdatePwd = async () => {
       title: "Success",
       message: "更新失败：" + res.msg,
       type: "error",
+      position: "top-left",
     });
   }
 };

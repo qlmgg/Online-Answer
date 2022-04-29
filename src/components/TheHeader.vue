@@ -4,6 +4,13 @@ import { logout } from "@/api/index.js";
 
 const store = useStore();
 const router = useRouter();
+const route = useRoute();
+
+const defaultActive = ref("/");
+
+watch(route, ({ path }) => {
+  defaultActive.value = path;
+});
 
 // 显示阴影
 const shadow = ref(false);
@@ -35,7 +42,7 @@ const handleLogout = () => {
           </router-link>
         </div>
         <el-menu
-          default-active="/"
+          :default-active="defaultActive"
           class="el-menu-demo"
           mode="horizontal"
           router

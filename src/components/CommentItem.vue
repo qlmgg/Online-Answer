@@ -9,6 +9,14 @@ const props = defineProps({
 });
 
 const comment = reactive(props.comment);
+const showMore = ref(false);
+const contentElm = ref(null);
+
+onMounted(() => {
+  if (contentElm.value) {
+    showMore.value = contentElm.value.offsetHeight > 200;
+  }
+});
 </script>
 
 <template>
@@ -32,7 +40,10 @@ const comment = reactive(props.comment);
         </div>
       </el-row>
       <el-row class="content">
-        {{ comment.content }}
+        <pre ref="contentElm" :class="{ showMore }">{{ comment.content }}</pre>
+      </el-row>
+      <el-row v-if="showMore">
+        <el-button size="small" @click="showMore = false">展开更多</el-button>
       </el-row>
     </el-col>
   </el-row>
@@ -61,10 +72,20 @@ const comment = reactive(props.comment);
   color: #606060;
 }
 .content {
-  padding: 16px 0;
+  padding: 16px 0 0 0;
   color: #030303;
+  font-size: 16px;
+  line-height: 1.4;
+  pre {
+    word-break: break-all;
+    white-space: break-spaces;
+  }
 }
 .action {
   margin-left: auto;
+}
+.showMore {
+  height: 200px;
+  overflow: hidden;
 }
 </style>

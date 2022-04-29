@@ -11,8 +11,11 @@ const data = reactive({
     },
   },
 });
-// 正确答案列表
+// 多选题正确答案列表
 const correctList = reactive([]);
+// 单选题、简答题正确答案
+const corectAnswer = ref(0);
+const questionType = ref(0);
 
 (async () => {
   const res = await getQuestionsById(id);
@@ -21,11 +24,15 @@ const correctList = reactive([]);
     return;
   }
   data.info = res.data;
+  questionType.value = data.info.type;
   // 计算正确答案
   if (data.info.public) {
     const arr = computeAnswerIndex(data.info);
-    correctList.splice(0);
-    correctList.push(...arr);
+    if (questionType.value === 1) {
+      correctList.push(...arr);
+    } else {
+      corectAnswer.value = arr;
+    }
   }
 })();
 </script>
@@ -33,9 +40,19 @@ const correctList = reactive([]);
 <template>
   <div class="info">
     <h1>{{ data.info.title }}</h1>
+    <ul v-if="questionType === 0">
+      <li
+        v-for="(o, i) in data.info.option"
+        :key="o"
+        class="item"
+        :class="{ correct: i === corectAnswer }"
+      >
+        {{ o }}
+      </li>
+    </ul>
     <ul
-      style="margin-top: 32px"
-      :style="{ listStyle: data.info.type === 1 ? 'square' : '' }"
+      v-else-if="questionType === 1"
+      style="margin-top: 32px; list-style: square"
     >
       <li
         v-for="(o, i) in data.info.option"
@@ -46,6 +63,9 @@ const correctList = reactive([]);
         {{ o }}
       </li>
     </ul>
+    <textarea v-else>
+      {{ corectAnswer }}
+    </textarea>
     <div class="descrption">题目解析：暂无。</div>
     <div class="from">
       本题目来自用户《

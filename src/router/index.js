@@ -46,6 +46,8 @@ const routes = [
             { path: '', component: () => import('@/view/Admin/Index.vue') },
             // Banner管理
             { path: 'banner', component: () => import('@/view/Admin/Banner.vue') },
+            // 热词管理
+            { path: 'Trending', component: () => import('@/view/Admin/Trending.vue') },
             // 学生管理
             { path: 'students', component: () => import('@/view/Admin/Students.vue') },
             // 教师管理

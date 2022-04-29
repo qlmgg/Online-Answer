@@ -4,7 +4,8 @@ const store = createStore({
     state: {
         token: undefined,
         user: undefined,
-        searchState: undefined
+        searchState: undefined,
+        centerPapersState: undefined
     },
     getters: {
 
@@ -18,6 +19,9 @@ const store = createStore({
         },
         updatesearchState(state, value) {
             state.searchState = value
+        },
+        updateCenterPapersState(state, value) {
+            state.centerPapersState = value
         }
     },
     actions: {

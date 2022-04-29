@@ -5,15 +5,6 @@ import { getBanner, getPapers } from "@/api/index.js";
 
 // 是否正在加载数据
 const loading = ref(true);
-// 正在加载数据时显示的数据
-const exam = reactive({
-  _id: "622ebf8e3f642d307bca8854",
-  title: "Loading...",
-  type: "Loading...",
-  count: "Loading...",
-  closing_date: "Loading...",
-  from: "Loading...",
-});
 // 考卷列表
 const exams = reactive([]);
 // 考卷总页数
@@ -24,7 +15,7 @@ const pageSize = ref(0);
 // 获取考卷数据
 const getExampaper = async (page = 1) => {
   loading.value = true;
-  const res = await getPapers(page);
+  const res = await getPapers({ page });
   pageSize.value = res.data.pageSize;
   pageCount.value = res.data.pageCount;
   exams.splice(0);
@@ -32,12 +23,20 @@ const getExampaper = async (page = 1) => {
   loading.value = false;
 };
 
-const banners = reactive([]);
+const banners = reactive([
+  {
+    _id: "1",
+    cover: "",
+    url: "",
+  },
+]);
+const bannerLoading = ref(true);
 
 getExampaper();
 
 (async () => {
   const res = await getBanner();
+  bannerLoading.value = false;
   banners.splice(0);
   banners.push(...res.data);
 })();
@@ -45,7 +44,11 @@ getExampaper();
 
 <template>
   <!-- banner -->
-  <BaseBanner :banners="banners" :key="banners.length" />
+  <BaseBanner
+    v-loading="bannerLoading"
+    :banners="banners"
+    :key="banners.length"
+  />
 
   <!-- 骨架屏 -->
   <el-skeleton :loading="loading">

@@ -16,6 +16,7 @@ import {
   deleteComment,
 } from "@/api/index.js";
 import { id2time } from "@/utils/index.js";
+import { computePaperState } from "@/utils/compute.js";
 
 const route = useRoute();
 const user = useStore().state.user;
@@ -60,6 +61,9 @@ const page = ref(1);
 // 通过URL获取id
 const { id } = route.params;
 
+// 试卷状态
+const paperState = ref(0);
+
 // 查询考卷评论
 const handleMoreComments = async () => {
   loading_comments.value = true;
@@ -94,6 +98,7 @@ const handlePostComment = async () => {
       title: "评论成功",
       message: `已提交评论：${comment.value}`,
       type: "success",
+      position: "top-left",
     });
     const { _id } = res.data;
     // 将评论放到comments中
@@ -115,6 +120,7 @@ const handleDeleteComment = async (comment, index) => {
       title: "删除评论成功",
       message: `已删除评论：${comment.content}`,
       type: "success",
+      position: "top-left",
     });
     exampaper.comments.splice(index, 1);
   } else {
@@ -122,6 +128,7 @@ const handleDeleteComment = async (comment, index) => {
       title: "删除评论失败",
       message: `原因：${res.msg}`,
       type: "warning",
+      position: "top-left",
     });
   }
 };
@@ -131,6 +138,8 @@ const handleDeleteComment = async (comment, index) => {
   const res = await getPaperInfo(id);
   loading.value = false;
   exampaper.info = res.data;
+  // 试卷状态：未开始、已结束、进行中
+  paperState.value = computePaperState(exampaper.info.time);
   // 获取评论
   if (exampaper.info.allow_comments) {
     handleMoreComments();
@@ -189,19 +198,25 @@ const handleDeleteComment = async (comment, index) => {
       </el-descriptions-item>
     </el-descriptions>
     <el-row justify="center" style="padding: 32px 0">
+      <el-button type="warning" v-if="paperState === 0">
+        考 试 未 开 始
+      </el-button>
+      <el-button type="danger" v-else-if="paperState === 1">
+        考 试 已 结 束
+      </el-button>
       <router-link
         :to="`/answer/${id}`"
         class="link"
-        v-if="
+        v-else-if="
           exampaper.info.multi_answer ||
           (!exampaper.info.multi_answer && !exampaper.answers.length)
         "
       >
         <el-button type="primary" size="large" :icon="Edit">开始答题</el-button>
       </router-link>
-      <el-button v-else type="primary" size="large" :icon="Edit" disabled
-        >您已完成答题</el-button
-      >
+      <el-button v-else type="primary" size="large" :icon="Edit" disabled>
+        您已完成答题
+      </el-button>
     </el-row>
   </div>
 
@@ -226,7 +241,7 @@ const handleDeleteComment = async (comment, index) => {
         <template #default="scope">
           <el-button size="small">
             <router-link class="link" :to="`/result/${scope.row._id}`">
-              查看
+              {{ exampaper.info.allow_view ? "查看" : "禁止查看" }}
             </router-link>
           </el-button>
         </template>
@@ -250,14 +265,21 @@ const handleDeleteComment = async (comment, index) => {
       </el-col>
     </el-row>
     <!-- 评论组件 -->
-    <el-row class="comment-wrap" align="middle" v-if="user">
+    <el-row class="comment-wrap" align="bottom" v-if="user">
       <el-col :span="1">
         <el-avatar size="large" :src="user.avatar">
           <el-icon :size="32"> <UserFilled /> </el-icon>
         </el-avatar>
       </el-col>
       <el-col :span="22" style="padding-left: 8px">
-        <el-input placeholder="请输入评论" v-model="comment" />
+        <el-input
+          placeholder="请输入评论（最大500个字符）"
+          type="textarea"
+          maxlength="500"
+          :rows="3"
+          v-model="comment"
+          :show-word-limit="true"
+        />
       </el-col>
       <el-col :span="1">
         <el-button

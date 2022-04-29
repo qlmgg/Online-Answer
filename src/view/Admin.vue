@@ -59,10 +59,7 @@ const user = useStore().state.user;
         </el-menu>
       </el-scrollbar>
     </el-aside>
-
-    <el-container>
-      <router-view></router-view>
-    </el-container>
+    <router-view></router-view>
   </el-container>
 </template>
 

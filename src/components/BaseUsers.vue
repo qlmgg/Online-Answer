@@ -53,6 +53,7 @@ const handleGetUsers = async () => {
       title: "Warning",
       message: "出错：" + res.msg,
       type: "warning",
+      position: "top-left",
     });
     return;
   }
@@ -90,12 +91,14 @@ const handleDeleteUser = async (index, _user) => {
       title: "Success",
       message: "已删除用户：" + _user.nickname,
       type: "success",
+      position: "top-left",
     });
   } else {
     ElNotification({
       title: "Warning",
       message: "删除失败：" + res.msg,
       type: "warning",
+      position: "top-left",
     });
   }
 };
@@ -108,6 +111,7 @@ const handleBanUser = async (index, _user) => {
       title: "Warning",
       message: "无法封禁自己",
       type: "warning",
+      position: "top-left",
     });
     return;
   }
@@ -121,12 +125,14 @@ const handleBanUser = async (index, _user) => {
       title: "Success",
       message: `已${ban ? "解封" : "封禁"}用户：` + user.nickname,
       type: "success",
+      position: "top-left",
     });
   } else {
     ElNotification({
       title: "Warning",
       message: "出错：" + res.msg,
       type: "warning",
+      position: "top-left",
     });
   }
 };
@@ -162,12 +168,14 @@ const handleUpdateUser = async () => {
       title: "Success",
       message: `更新用户成功: ${editUserInfo.nickname}`,
       type: "success",
+      position: "top-left",
     });
   } else {
     ElNotification({
       title: "Warning",
       message: "出错：" + res.msg,
       type: "warning",
+      position: "top-left",
     });
   }
 };
@@ -192,6 +200,7 @@ const handleDeleteSelection = async () => {
       `已删除: ${res.data.deletedCount}个用户` +
       (failedCount ? `, ${failedCount}个删除失败` : ""),
     type: "success",
+    position: "top-left",
   });
   handleSearch();
 };

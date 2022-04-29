@@ -56,6 +56,7 @@ const submit = async () => {
         title: "提示",
         message: "请完整填写选项",
         type: "warning",
+        position: "top-left",
       });
       return;
     }
@@ -68,6 +69,7 @@ const submit = async () => {
       title: "提示",
       message: "请填写正确答案",
       type: "warning",
+      position: "top-left",
     });
     return;
   }
@@ -85,12 +87,14 @@ const submit = async () => {
       title: "创建成功",
       message: "题目创建成功",
       type: "success",
+      position: "top-left",
     });
   } else {
     ElNotification({
       title: "创建失败",
       message: "原因：" + res.msg,
       type: "warning",
+      position: "top-left",
     });
   }
 };

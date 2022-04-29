@@ -1,11 +1,9 @@
 <script setup>
+import { onBeforeRouteLeave } from "vue-router";
 import { getAnswers } from "@/api/index.js";
-import { reactive, ref } from "vue";
-import { useStore } from "vuex";
-
 import AnswerCard from "@/components/AnswerCard.vue";
 
-const user = useStore().state.user;
+const store = useStore();
 const answers = reactive([]);
 const total = ref(0);
 // 平均分
@@ -18,7 +16,6 @@ const questionCount = ref(0);
 const correctCount = ref(0);
 
 const handlePageChange = async (page = 1) => {
-  console.log(page);
   const res = await getAnswers({ page, limit: 3 });
   answers.splice(0);
   answers.push(...res.data.answers);
@@ -29,7 +26,35 @@ const handlePageChange = async (page = 1) => {
   correctCount.value = res.data.correctCount;
 };
 
-handlePageChange();
+// 增加路由守卫
+onBeforeRouteLeave((to) => {
+  const path = to.path.toLowerCase();
+  // 跳转到答题详情界面
+  if (path.startsWith("/exampaper") || path.startsWith("/result")) {
+    store.commit("updateCenterPapersState", {
+      _answers: answers,
+      _total: total.value,
+      _avgScore: avgScore.value,
+      _passingCount: passingCount.value,
+      _correctCount: correctCount.value,
+    });
+  } else {
+    store.commit("updateCenterPapersState", undefined);
+  }
+  return true;
+});
+
+if (store.state.centerPapersState) {
+  const { _answers, _total, _avgScore, _passingCount, _correctCount } =
+    store.state.centerPapersState;
+  answers.push(..._answers);
+  total.value = _total;
+  avgScore.value = _avgScore;
+  passingCount.value = _passingCount;
+  correctCount.value = _correctCount;
+} else {
+  handlePageChange();
+}
 </script>
 
 <template>

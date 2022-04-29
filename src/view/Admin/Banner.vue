@@ -1,5 +1,5 @@
 <script setup>
-import Banner from "@/components/Banner.vue";
+import BaseBanner from "@/components/BaseBanner.vue";
 import {
   getBanner,
   postBanner,
@@ -9,7 +9,14 @@ import {
 
 const index = ref(0);
 const bannerElement = ref(null);
-const banners = reactive([]);
+const banners = reactive([
+  {
+    _id: "1",
+    cover: "",
+    url: "",
+  },
+]);
+const loading = ref(true);
 
 // 增加Banner
 const addBanner = () => {
@@ -29,6 +36,7 @@ const handleDelete = async () => {
     title: "提示",
     message: res.msg,
     type: "success",
+    position: "top-left",
   });
 };
 
@@ -41,6 +49,7 @@ const handleSave = async () => {
       title: "提示",
       message: res.msg,
       type: "success",
+      position: "top-left",
     });
   } else {
     const res = await updateBanner({
@@ -51,6 +60,7 @@ const handleSave = async () => {
       title: "提示",
       message: res.msg,
       type: "success",
+      position: "top-left",
     });
   }
 };
@@ -64,6 +74,7 @@ const handleChangeBanner = (index) => {
 
 (async () => {
   const res = await getBanner();
+  loading.value = false;
   banners.splice(0);
   banners.push(...res.data);
 })();
@@ -73,7 +84,8 @@ const handleChangeBanner = (index) => {
   <el-container>
     <el-main>
       <h2>预览</h2>
-      <Banner
+      <BaseBanner
+        v-loading="loading"
         ref="bannerElement"
         :key="banners.length"
         :banners="banners"
@@ -90,10 +102,16 @@ const handleChangeBanner = (index) => {
       </el-button>
       <el-form style="margin-top: 16px">
         <el-form-item v-if="banners[index]" label="封面图片">
-          <el-input placeholder="/uploads/example.jpg" v-model="banners[index].cover"></el-input>
+          <el-input
+            placeholder="/uploads/example.jpg"
+            v-model="banners[index].cover"
+          ></el-input>
         </el-form-item>
         <el-form-item v-if="banners[index]" label="跳转链接">
-          <el-input placeholder="/exampaper/:id" v-model="banners[index].url"></el-input>
+          <el-input
+            placeholder="/exampaper/:id"
+            v-model="banners[index].url"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="addBanner"> 新增 </el-button>

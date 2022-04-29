@@ -3,6 +3,7 @@ import { getPapers, deletePaper, updatePaper } from "@/api/index.js";
 import { debounce } from "lodash";
 import SchoolSelect from "@/components/SchoolSelect.vue";
 import school from "@/assets/school.json";
+import { computePaperState } from "@/utils/compute.js";
 
 // 搜索过滤器
 const filter = reactive({
@@ -35,10 +36,15 @@ const handleGetPapers = async () => {
       title: "Warning",
       message: "出错：" + res.msg,
       type: "warning",
+      position: "top-left",
     });
     return;
   }
   papers.splice(0);
+  // 计算试卷状态
+  res.data.exampaper.forEach((v) => {
+    v.state = computePaperState(v.time);
+  });
   papers.push(...res.data.exampaper);
   pageCount.value = res.data.pageCount;
 };
@@ -53,12 +59,14 @@ const handleDeletePaper = async (index, paper) => {
       title: "Success",
       message: "已删除试卷：" + paper.title,
       type: "success",
+      position: "top-left",
     });
   } else {
     ElNotification({
       title: "Warning",
       message: "删除失败：" + res.msg,
       type: "warning",
+      position: "top-left",
     });
   }
 };
@@ -140,6 +148,15 @@ handleGetPapers();
               </el-tag>
             </template>
           </el-table-column>
+          <el-table-column prop="time" label="状态" width="100px">
+            <template #default="scope">
+              <el-tag type="info" v-if="scope.row.state === 0"> 未开始 </el-tag>
+              <el-tag type="danger" v-else-if="scope.row.state === 1">
+                已结束
+              </el-tag>
+              <el-tag type="success" v-else> 进行中 </el-tag>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="questions.length"
             label="题目数量"
@@ -163,7 +180,7 @@ handleGetPapers();
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column prop="from.nickname" label="出卷人" />
+          <el-table-column prop="from.nickname" label="出卷人" width="100px" />
           <el-table-column label="操作">
             <template #default="scope">
               <el-button size="small"> 分析 </el-button>

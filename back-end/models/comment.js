@@ -1,8 +1,8 @@
 /*
  * @Author: openrhc 
  * @Date: 2022-04-08 22:26:38 
- * @Last Modified by:   openrhc 
- * @Last Modified time: 2022-04-08 22:26:38 
+ * @Last Modified by: openrhc
+ * @Last Modified time: 2022-04-29 12:54:41
  */
 
 import mongoose from "mongoose";
@@ -20,7 +20,8 @@ const commentSchema = new Schema({
     // 评论内容
     content: {
         type: String,
-        required: true
+        required: true,
+        maxlength: 500
     },
     // 试卷ID
     exampaperid: {
