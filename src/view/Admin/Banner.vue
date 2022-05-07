@@ -31,11 +31,13 @@ const addBanner = () => {
 // 删除Banner
 const handleDelete = async () => {
   const res = await deleteBanner(banners[index.value]._id);
-  banners.splice(index.value, 1);
+  if (res.code === 0) {
+    banners.splice(index.value, 1);
+  }
   ElNotification({
     title: "提示",
     message: res.msg,
-    type: "success",
+    type: res.code === 0 ? "success" : "warning",
     position: "top-left",
   });
 };
@@ -44,11 +46,13 @@ const handleDelete = async () => {
 const handleSave = async () => {
   if (typeof banners[index.value]._id === "number") {
     const res = await postBanner(banners[index.value]);
-    banners[index.value]._id = res.data._id;
+    if (res.code === 0) {
+      banners[index.value]._id = res.data._id;
+    }
     ElNotification({
       title: "提示",
       message: res.msg,
-      type: "success",
+      type: res.code === 0 ? "success" : "warning",
       position: "top-left",
     });
   } else {
@@ -59,7 +63,7 @@ const handleSave = async () => {
     ElNotification({
       title: "提示",
       message: res.msg,
-      type: "success",
+      type: res.code === 0 ? "success" : "warning",
       position: "top-left",
     });
   }

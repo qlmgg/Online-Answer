@@ -24,7 +24,7 @@ const handleDelete = async (index, { _id, keywords }) => {
   }
   ElNotification({
     title: "提示",
-    message: res.msg + ":" + keywords,
+    message: res.msg,
     type: res.code === 0 ? "success" : "warning",
     position: "top-left",
   });

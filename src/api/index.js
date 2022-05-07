@@ -1,7 +1,7 @@
 import request from '@/utils/request.js'
 
 // 获取考卷
-export const getPapers = ({ page = 1, from = '', limit = 8, keywords = '' }) => request.get(`/papers?page=${page}&from=${from}&limit=${limit}&keywords=${keywords}`)
+export const getPapers = ({ page = 1, from = '', limit = 8, keywords = '', state = '', selfid = '' }) => request.get(`/papers?page=${page}&from=${from}&limit=${limit}&keywords=${keywords}&state=${state}&selfid=${selfid}`)
 
 // 删除考卷
 export const deletePaper = (id = '') => request.delete(`/papers/${id}`)
@@ -28,7 +28,7 @@ export const deleteComment = (id = '') => request.delete(`/comments/${id}`)
 export const getQuestionsById = (id) => request.get(`/questions/${id}`)
 
 // 获取所有题目
-export const getQuestions = ({ keywords = '', _public = true, ban = false, page = 1, limit = 10, type = "", exampaper = "" }) => request.get(`/questions?keywords=${keywords}&ban=${ban}&public=${_public}&page=${page}&limit=${limit}&type=${type}&exampaper=${exampaper}`)
+export const getQuestions = ({ keywords = '', _public = true, ban = false, page = 1, limit = 10, type = "", exampaper = "", from = '', selfid = '' }) => request.get(`/questions?keywords=${keywords}&ban=${ban}&public=${_public}&page=${page}&limit=${limit}&type=${type}&exampaper=${exampaper}&from=${from}&selfid=${selfid}`)
 
 // 添加题目
 export const postQuestion = (data = {}) => request.post(`/questions`, data)
@@ -49,7 +49,10 @@ export const logout = () => request.delete('/users/logout')
 export const register = (data = {}) => request.post('/users/register', data)
 
 // 获取答卷记录
-export const getAnswers = ({ exampaper = '', page = 1, limit = 10 }) => request.get(`/answers?exampaper=${exampaper}&page=${page}&limit=${limit}`)
+export const getAnswers = ({ exampaper = '', page = 1, limit = 10, state = '' }) => request.get(`/answers?exampaper=${exampaper}&page=${page}&limit=${limit}&state=${state}`)
+
+// 删除答卷
+export const deleteAnswer = (id = '') => request.delete(`/answers/${id}`)
 
 // 获取错题
 export const getWrongs = ({ page = 1, limit = 10 }) => request.get(`/answers/wrongs?page=${page}&limit=${limit}`)

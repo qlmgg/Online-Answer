@@ -240,7 +240,7 @@ const handleDeleteComment = async (comment, index) => {
       <el-table-column label="操作">
         <template #default="scope">
           <el-button size="small">
-            <router-link class="link" :to="`/result/${scope.row._id}`">
+            <router-link class="link" :to="`/Result/${scope.row._id}`">
               {{ exampaper.info.allow_view ? "查看" : "禁止查看" }}
             </router-link>
           </el-button>

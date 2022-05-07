@@ -158,7 +158,7 @@ watch(
                 <el-button
                   :icon="Delete"
                   @click="delOption(i)"
-                  :disabled="question.option.length <= 2"
+                  :disabled="question.option.length <= 1"
                 />
               </template>
             </el-input>

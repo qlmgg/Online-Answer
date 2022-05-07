@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:26:33 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-27 21:54:04
+ * @Last Modified time: 2022-05-07 18:17:57
  */
 
 import mongoose from "mongoose";
@@ -37,6 +37,15 @@ const answerSchema = new Schema({
     correctRate: {
         type: Number,
         required: true
+    },
+    // 试卷状态
+    state: {
+        type: Number,
+        required: false,
+        enum: [
+            0, // 批改完毕
+            1, // 未批改简答题
+        ]
     }
 })
 

@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:05:23 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-27 22:21:37
+ * @Last Modified time: 2022-05-07 18:56:35
  */
 
 import Answer from '../models/answer.js'
@@ -16,10 +16,13 @@ class AnswerCtl {
     // 获取回答列表
     async find(ctx) {
         const ctxUser = ctx.request.user
-        const { page = 1, exampaper, limit = 10 } = ctx.query
+        const { page = 1, exampaper, limit = 10, state = '' } = ctx.query
         const skip = (page - 1) * limit
         const filter = {}
-        // 角色为学生仅查询自己的答卷，教师管理员则查询所有的答卷
+        if (state) {
+            filter.state = state
+        }
+        // 角色为学生仅查询自己的答卷
         if (ctxUser.role === 0) {
             filter.user = ctxUser._id
         }
@@ -28,10 +31,20 @@ class AnswerCtl {
             filter.exampaper = exampaper
         }
         // 查询所有答卷
-        const answers = await Answer
+        let answers = await Answer
             .find(filter)
             .populate(['user', 'exampaper'])
             .sort({ _id: -1 })
+        answers.forEach(v => {
+            v.user = v.user || message.DeletedUsers
+            v.exampaper = v.exampaper || message.DeletedExampapers
+        })
+        // 角色为教师过滤出属于自己试卷的答卷
+        if (ctxUser.role === 1) {
+            answers = answers.filter(v => {
+                return v.exampaper.from === ctxUser._id
+            })
+        }
         // 平均分
         const avgScore = answers.reduce((p, c) => p + c.score, 0) / answers.length || 0
         // 及格试卷数量
@@ -50,7 +63,7 @@ class AnswerCtl {
         }, 0)
         answers.forEach(v => {
             if (!v.exampaper) {
-                v.exampaper = { title: '试卷已删除' }
+                v.exampaper = message.DeletedExampapers
             }
             // 如果不可查看结果，则删除answers字段
             if (!v.exampaper.allow_view) {
@@ -93,7 +106,7 @@ class AnswerCtl {
         let mutltiCount = 0
         answers.forEach(v => {
             if (!v.exampaper) {
-                v.exampaper = { title: '已删除试卷' }
+                v.exampaper = message.DeletedExampapers
             }
             v.answers.forEach(vv => {
                 if (vv.question.type !== 2 && vv.answer !== vv.question.answer) {
@@ -117,7 +130,7 @@ class AnswerCtl {
         // 处理exampaper为null的情况
         _wrongs.forEach((v, i) => {
             if (!v.exampaper) {
-                v.exampaper = { _id: i, title: "已删除试卷" }
+                v.exampaper = message.DeletedExampapers
             }
         })
         ctx.body = {
@@ -137,7 +150,7 @@ class AnswerCtl {
             return
         }
         if (!answer.exampaper) {
-            answer.exampaper = { _id: -1 }
+            answer.exampaper = message.DeletedExampapers
         }
         const exampaper = await Exampaper.findById(answer.exampaper._id)
         if (exampaper && !exampaper.allow_view) {
@@ -167,7 +180,7 @@ class AnswerCtl {
             // 查询答卷记录
             const answer = await Answer.findOne({ exampaper, user })
             if (answer) {
-                ctx.body = { code: -1, msg: '本试卷不能重复作答' }
+                ctx.body = { code: -1, msg: message.AnswerExisted }
                 return
             }
         }
@@ -176,32 +189,33 @@ class AnswerCtl {
         // 查找试卷中的题目
         const questions = await Question.find({ _id: { $in: paper.questions } })
         for (let i = 0, len = questions.length; i < len; i++) {
-            let answer = null
-            if (paper.disorder) {
-                // 开启了乱序，需查找回答对应的题目
-                answer = answers.find(v => v._id === questions[i]._id.toString())
-            } else {
-                // 没有开启乱序，则题目与回答一一对应
-                answer = answers[i]
-            }
-            // 跳过简答题的判断，如果题目的答案与回答相同，则加分
-            if (questions[i].type !== 2 && questions[i].answer === answer.answer) {
-                score += 1
+            // 查找用户答案
+            let answer = answers.find(v => v._id === questions[i]._id.toString())
+            // 跳过简答题的判断
+            if (questions[i].type !== 2) {
+                // 如果题目的答案与回答相同，则加分
+                if (questions[i].answer === answer.answer) {
+                    score += 1
+                }
+                // 添加标志位，说明本题目已批改完毕
+                answer.done = true
             }
             // 将题目保存到回答记录里，以便查看答题结果时使用
             answer.question = questions[i]
-            // 将
         }
         // 正确率
-        const correctRate = (score / questions.length) * 100;
+        const correctRate = (score / questions.length) * 100 || 0;
         // 按100分比例转换得分
         score = score * (100 / answers.length) || 0
+        // 答卷批改状态
+        const state = questions.some(v => v.type === 2) ? 1 : 0
         const data = {
             user,
             exampaper,
             answers,
             score,
-            correctRate
+            correctRate,
+            state
         }
         const { _id } = await new Answer(data).save()
         // 统计答卷到排行榜
@@ -223,7 +237,27 @@ class AnswerCtl {
             score,
             id: paper.allow_view && _id || 0 // 允许查看考试结果，则返回真实ID，否则返回假的ID
         }
-        ctx.body = { code: 0, msg: '试卷提交成功', data: result }
+        ctx.body = { code: 0, msg: message.CreateSuccess, data: result }
+    }
+
+    // 删除答卷
+    async delete(ctx) {
+        const ctxUser = ctx.request.user
+        const id = ctx.params.id
+        const answer = await Answer.findById(id).populate(['user', 'exampaper'])
+        console.log(answer);
+        if (!answer) {
+            ctx.body = { code: -1, msg: message.AnswerNotFound }
+            return
+        }
+        answer.user = answer.user || message.DeletedUsers
+        answer.exampaper = answer.exampaper || message.DeletedExampapers
+        if (ctxUser._id !== answer.user._id.toString() && ctxUser.role <= answer.user.role) {
+            ctx.body = { code: -1, msg: message.PermissionDenied }
+            return
+        }
+        await Answer.findByIdAndDelete(id)
+        ctx.body = { code: 0, msg: message.DeleteSuccess }
     }
 }
 

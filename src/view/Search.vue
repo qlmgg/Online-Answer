@@ -156,7 +156,7 @@ onBeforeRouteLeave((to) => {
               <div class="card-header">
                 <div>
                   <el-tag style="margin-right: 8px" size="small">试卷</el-tag>
-                  <router-link class="link" :to="`/exampaper/${r._id}`">
+                  <router-link class="link" :to="`/Exampaper/${r._id}`">
                     {{ r.title }}
                   </router-link>
                 </div>

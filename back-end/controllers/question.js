@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:17:30 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-25 17:01:51
+ * @Last Modified time: 2022-05-07 17:55:32
  */
 
 import Question from '../models/question.js'
@@ -14,7 +14,17 @@ class QuestionCtl {
     // 获取题目列表
     async find(ctx) {
         // 分页查询
-        const { page = 1, limit = 8, keywords = "", type = "", ban = "", public: _public, exampaper = "" } = ctx.query
+        const {
+            page = 1,
+            limit = 8,
+            keywords = "",
+            type = "",
+            ban = "",
+            public: _public,
+            exampaper = "",
+            from = '',
+            selfid = ''
+        } = ctx.query
         // 如果传入试卷ID，则返回试卷包含的试题
         if (exampaper) {
             const paper = await Exampaper.findById(exampaper)
@@ -38,15 +48,28 @@ class QuestionCtl {
                 { title: { $regex: reg } }
             ]
         }
-        const questions = await Question
+        let questions = await Question
             .find(filter)
             .sort({ _id: -1 })
             .skip(skip)
             .limit(limit)
             .populate('author')
         questions.forEach(v => {
-            v.author = v.author ? v.author : { _id: 0, nickname: '已注销用户' }
+            v.author = v.author || message.DeletedUsers
+            if (!v.public) {
+                v.answer = ''
+            }
         })
+        // 过滤出题目人
+        if (from) {
+            questions = questions.filter(v => {
+                return (
+                    from === 'own'
+                        ? v.author._id.toString() === selfid
+                        : v.author._id.toString() !== selfid
+                )
+            })
+        }
         // 查询题目总数
         const total = await Question.find(filter).count()
         ctx.body = { code: 0, msg: message.QuerySuccess, data: { questions, total } }
@@ -92,24 +115,31 @@ class QuestionCtl {
 
     // 更新题目信息
     async update(ctx) {
-        const question = await Question.findByIdAndUpdate(ctx.params.id, ctx.request.body, { new: 1 })
+        const ctxUser = ctx.request.user
+        const id = ctx.params.id
+        const question = await Question.findById(id).populate('author')
         if (!question) {
             ctx.body = { code: -1, msg: message.QuestionNotFound }
             return
         }
-        ctx.body = { code: 0, msg: message.UpdateSuccess, data: question }
+        question.author = question.author || message.DeletedUsers
+        if (ctxUser._id !== question.author._id.toString() && ctxUser.role <= question.author.role) {
+            ctx.body = { code: -1, msg: message.PermissionDenied }
+            return
+        }
+        const newQuestion = await Question.findByIdAndUpdate(id, ctx.request.body, { new: 1 })
+        ctx.body = { code: 0, msg: message.UpdateSuccess, data: newQuestion }
     }
 
     // 删除题目
     async deleteById(ctx) {
         const ctxUser = ctx.request.user
         const question = await Question.findById(ctx.params.id).populate('author')
-        question.author = question.author || { _id: 0, role: 0, nickname: '已注销用户' }
         if (!question) {
             ctx.body = { code: -1, msg: message.QuestionNotFound }
             return
         }
-        console.log(ctxUser, question);
+        question.author = question.author || message.DeletedUsers
         if (ctxUser._id !== question.author._id.toString() && ctxUser.role <= question.author.role) {
             ctx.body = { code: -1, msg: message.PermissionDenied }
             return

@@ -270,9 +270,9 @@ handleGetUsers();
           />
         </el-col>
         <el-col :span="2">
-          <el-button style="margin-left: 4px" @click="handleResetFilter"
-            >重置</el-button
-          >
+          <el-button style="margin-left: 4px" @click="handleResetFilter">
+            重置
+          </el-button>
         </el-col>
       </el-row>
     </el-header>
@@ -324,18 +324,21 @@ handleGetUsers();
             <template #default="scope">
               <el-button
                 size="small"
+                v-if="scope.row.role < user.role || scope.row._id === user._id"
                 @click="handleEditUser(scope.$index, scope.row)"
               >
                 编辑
               </el-button>
               <el-button
                 size="small"
+                v-if="scope.row.role < user.role"
                 @click="handleBanUser(scope.$index, scope.row)"
               >
                 {{ scope.row.ban ? "解封" : "封禁" }}
               </el-button>
               <el-popconfirm
                 title="你确定要删除这个用户吗？"
+                v-if="scope.row.role < user.role"
                 @confirm="handleDeleteUser(scope.$index, scope.row)"
               >
                 <template #reference>

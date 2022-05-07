@@ -5,12 +5,16 @@ import SchoolSelect from "@/components/SchoolSelect.vue";
 import school from "@/assets/school.json";
 import { computePaperState } from "@/utils/compute.js";
 
+const user = useStore().state.user;
+
 // 搜索过滤器
 const filter = reactive({
   keywords: "",
   page: 1,
   limit: 10,
-  from: "",
+  from: user.role === 1 ? "own" : "other",
+  state: "",
+  selfid: user._id,
 });
 // 试卷总页数
 const pageCount = ref(0);
@@ -25,6 +29,16 @@ const editUserInfo = reactive({
   index: -1,
   _id: "",
 });
+
+// 重置搜索条件
+const handleResetFilter = () => {
+  filter.keywords = "";
+  filter.page = 1;
+  filter.limit = 10;
+  filter.from = user.role === 1 ? "own" : "other";
+  filter.state = "";
+  handleGetPapers();
+};
 
 // 获取试卷列表
 const handleGetPapers = async () => {
@@ -118,16 +132,24 @@ handleGetPapers();
   <el-container>
     <el-header style="padding: 16px">
       <el-row>
-        <el-col :span="8">
+        <el-col :span="7">
           试卷状态:
-          <el-select placeholder="Select">
+          <el-select v-model="filter.state" @change="handleGetPapers">
             <el-option label="全部" value="" />
-            <el-option label="待开始" :value="false" />
-            <el-option label="已结束" :value="true" />
-            <el-option label="正在进行" :value="false" />
+            <el-option label="未开始" value="1" />
+            <el-option label="已结束" value="2" />
+            <el-option label="进行中" value="3" />
           </el-select>
         </el-col>
-        <el-col :span="16">
+        <el-col :span="7">
+          出卷人:
+          <el-select v-model="filter.from" @change="handleGetPapers">
+            <el-option label="全部" value="" />
+            <el-option label="自己" value="own" />
+            <el-option label="其他人" value="other" />
+          </el-select>
+        </el-col>
+        <el-col :span="8">
           <el-input
             v-model="filter.keywords"
             placeholder="键入关键词以搜索试卷，例如：试卷名"
@@ -135,12 +157,23 @@ handleGetPapers();
             @input="handleSearch"
           />
         </el-col>
+        <el-col :span="2">
+          <el-button style="margin-left: 4px" @click="handleResetFilter">
+            重置
+          </el-button>
+        </el-col>
       </el-row>
     </el-header>
     <el-main>
       <el-scrollbar>
         <el-table stripe :data="papers" v-loading="loading">
-          <el-table-column prop="title" label="试卷名" />
+          <el-table-column prop="title" label="试卷名">
+            <template #default="scope">
+              <router-link :to="`/exampaper/${scope.row._id}`" class="link">
+                {{ scope.row.title }}
+              </router-link>
+            </template>
+          </el-table-column>
           <el-table-column prop="type" label="类型" width="100px">
             <template #default="scope">
               <el-tag>
@@ -186,11 +219,13 @@ handleGetPapers();
               <el-button size="small"> 分析 </el-button>
               <el-button
                 size="small"
+                v-if="scope.row.from._id === user._id || user.role > 1"
                 @click="handleEditPaper(scope.$index, scope.row)"
               >
                 编辑
               </el-button>
               <el-popconfirm
+                v-if="scope.row.from._id === user._id || user.role > 1"
                 title="你确定要删除这个试卷吗？"
                 @confirm="handleDeletePaper(scope.$index, scope.row)"
               >

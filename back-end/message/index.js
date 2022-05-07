@@ -23,9 +23,13 @@ export default {
     TokenInvalid: 'Token失效',
     LackToken: '缺少Token',
     AnswerNotFound: '答卷不存在',
+    AnswerExisted: '本试卷不能重复作答',
     BannerNotFound: 'Banner不存在',
     IncorrectPassword: '密码不正确',
     ResultForbidden: '禁止查看考卷结果',
     HotWordsNotFound: '热词不存在',
-    HotWordsExisted: '热词已存在'
+    HotWordsExisted: '热词已存在',
+
+    DeletedUsers: { _id: 0, role: 0, nickname: '已注销的用户' },
+    DeletedExampapers: { _id: 0, title: '已删除的试卷', from: '' }
 }

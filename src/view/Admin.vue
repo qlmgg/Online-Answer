@@ -4,6 +4,7 @@ import {
   User as IconUser,
   Paperclip,
   ToiletPaper,
+  Document,
 } from "@element-plus/icons-vue";
 const user = useStore().state.user;
 </script>
@@ -12,49 +13,50 @@ const user = useStore().state.user;
   <el-container>
     <el-aside width="200px">
       <el-scrollbar>
-        <el-menu :default-openeds="['0']" router :unique-opened="true">
-          <el-sub-menu index="0">
+        <el-menu
+          :default-openeds="[user.role === 1 ? '1' : '0']"
+          router
+          :unique-opened="true"
+        >
+          <el-sub-menu index="0" v-if="user.role > 1">
             <template #title>
               <el-icon><icon-menu /></el-icon>平台概览
             </template>
-            <el-menu-item-group>
-              <el-menu-item index="/Admin">概览</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group>
-              <el-menu-item index="/Admin/Banner">Banner</el-menu-item>
-            </el-menu-item-group>
+            <el-menu-item index="/Admin">概览</el-menu-item>
+            <el-menu-item index="/Admin/Banner">Banner</el-menu-item>
+            <el-menu-item index="/Admin/Trending">搜索词</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="1">
             <template #title>
               <el-icon><icon-user /></el-icon>用户管理
             </template>
-            <el-menu-item-group>
-              <el-menu-item index="/Admin/Students">学生列表</el-menu-item>
-              <el-menu-item v-if="user.role > -1" index="/Admin/Teachers">
-                教师列表
-              </el-menu-item>
-              <el-menu-item v-if="user.role > -1" index="/Admin/Administrators">
-                管理员列表
-              </el-menu-item>
-            </el-menu-item-group>
+            <el-menu-item index="/Admin/Students">学生列表</el-menu-item>
+            <el-menu-item v-if="user.role > 0" index="/Admin/Teachers">
+              教师列表
+            </el-menu-item>
+            <el-menu-item v-if="user.role > 1" index="/Admin/Administrators">
+              管理员列表
+            </el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="2">
             <template #title>
               <el-icon><paperclip /></el-icon>试卷管理
             </template>
-            <el-menu-item-group>
-              <el-menu-item index="/Admin/Papers">试卷列表</el-menu-item>
-              <el-menu-item index="/Admin/AddPaper">添加试卷</el-menu-item>
-            </el-menu-item-group>
+            <el-menu-item index="/Admin/Papers">试卷列表</el-menu-item>
+            <el-menu-item index="/Admin/AddPaper">添加试卷</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="3">
             <template #title>
               <el-icon><toiletPaper /></el-icon>题库管理
             </template>
-            <el-menu-item-group>
-              <el-menu-item index="/Admin/Questions">题目列表</el-menu-item>
-              <el-menu-item index="/Admin/AddQuestion">添加题目</el-menu-item>
-            </el-menu-item-group>
+            <el-menu-item index="/Admin/Questions">题目列表</el-menu-item>
+            <el-menu-item index="/Admin/AddQuestion">添加题目</el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="4">
+            <template #title>
+              <el-icon><document /></el-icon>答卷管理
+            </template>
+            <el-menu-item index="/Admin/Answers">答卷列表</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </el-scrollbar>

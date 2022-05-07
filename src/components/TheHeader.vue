@@ -17,7 +17,10 @@ const shadow = ref(false);
 
 // 退出登录
 const handleLogout = () => {
-  console.log(store.state.user);
+  // 答题状态，禁止退出
+  if (route.path.toLowerCase().startsWith("/answer")) {
+    return;
+  }
   logout().then(() => {
     ElMessage({
       message: "已退出",
@@ -69,9 +72,15 @@ const handleLogout = () => {
                 <male color="skyblue" />
               </el-icon>
               {{ store.state.user.nickname }}
+              （{{ ["学生", "教师", "管理员"][store.state.user.role] }}）
             </template>
             <el-menu-item index="/Center">个人中心</el-menu-item>
-            <el-menu-item v-if="store.state.user.role > -1" index="/Admin">
+            <el-menu-item
+              v-if="store.state.user.role > 0"
+              :index="
+                store.state.user.role === 1 ? '/Admin/Students' : '/Admin'
+              "
+            >
               后台管理
             </el-menu-item>
             <el-menu-item index="#" @click="handleLogout">

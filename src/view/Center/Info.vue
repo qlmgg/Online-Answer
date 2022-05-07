@@ -149,6 +149,7 @@ const handleUpdatePwd = async () => {
           :auto-upload="true"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
+          accept=".png,.jpg"
         >
           <el-avatar :src="editUser.avatar" :size="100" class="avatar">
             <el-icon :size="80"><UserFilled /></el-icon>

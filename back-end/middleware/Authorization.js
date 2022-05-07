@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:26:23 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-27 15:54:52
+ * @Last Modified time: 2022-05-07 17:24:51
  */
 
 import jwt from 'jsonwebtoken'
@@ -15,14 +15,22 @@ const authList = [
     { pattern: /\/users\/password/, method: 'PUT', role: 0 }, // 重置密码
     { pattern: /\/users/, method: 'PUT', role: 0 },         // 更新用户
     { pattern: /\/questions/, method: 'GET', role: 0 },     // 获取试卷题目
-    { pattern: /\/paper/, method: 'DELETE', role: 1 },      // 删除试卷
+    { pattern: /\/papers/, method: 'DELETE', role: 1 },      // 删除试卷
+    { pattern: /\/papers/, method: 'POST', role: 1 },      // 添加试卷
     { pattern: /\/comments/, method: 'DELETE', role: 0 },   // 删除评论
     { pattern: /\/questions/, method: 'GET', role: 1 },     // 获取题目列表
     { pattern: /\/questions/, method: 'DELETE', role: 1 },  // 删除题目
+    { pattern: /\/questions/, method: 'PUT', role: 1 },  // 更新题目
+    { pattern: /\/questions/, method: 'POST', role: 1 },  // 添加题目
     { pattern: /\/answers/, method: 'GET', role: 0 },       // 获取答卷列表
     { pattern: /\/banners/, method: 'POST', role: 2 },      // 增加Banner
     { pattern: /\/banners/, method: 'PUT', role: 2 },       // 更新Banner
     { pattern: /\/banners/, method: 'DELETE', role: 2 },    // 删除Banner
+    { pattern: /\/hotwords/, method: 'POST', role: 2 },      // 增加搜索词
+    { pattern: /\/hotwords/, method: 'DELETE', role: 2 },   // 删除搜索词
+    { pattern: /\/answers/, method: 'DELETE', role: 1 },   // 删除答卷
+    { pattern: /\/status/, method: 'GET', role: 2 },   // 查看统计数据
+
 ]
 const length = authList.length
 

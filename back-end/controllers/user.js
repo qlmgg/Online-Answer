@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:21:41 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-27 13:08:21
+ * @Last Modified time: 2022-05-07 12:02:38
  */
 
 import { readFileSync } from 'fs'
@@ -19,10 +19,16 @@ class UserCtl {
 
     // 获取用户列表
     async find(ctx) {
+        const ctxUser = ctx.request.user
+        const role = ctx.query.role || 0
+        // 禁止查询高权限用户列表
+        if (role > ctxUser.role) {
+            ctx.body = { code: -1, msg: message.PermissionDenied }
+            return
+        }
         // 分页查询
         const page = ctx.query.page || 1
         const keywords = ctx.query.keywords || ''
-        const role = ctx.query.role || 0
         const ban = ctx.query.ban
         const gender = ctx.query.gender
         const skip = (page - 1) * 10
@@ -130,7 +136,7 @@ class UserCtl {
             ctx.body = { code: -1, msg: message.UserNotFound }
             return
         }
-        // 禁止删除高于自己权限的账户
+        // 禁止删除高于或等于自己权限的账户
         if (ctxUser.role <= user.role) {
             ctx.body = { code: -1, msg: message.PermissionDenied }
             return

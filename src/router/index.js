@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 
 import Home from '@/view/Home.vue'
 
@@ -62,12 +62,15 @@ const routes = [
             { path: 'addquestion', component: () => import('@/view/Admin/AddQuestion.vue') },
             // 试题管理
             { path: 'questions', component: () => import('@/view/Admin/Questions.vue') },
+            // 回答管理
+            { path: 'answers', component: () => import('@/view/Admin/Answers.vue') },
         ]
     },
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
+    // history: createWebHistory(),
+    history: createWebHashHistory(),
     routes
 })
 
@@ -82,10 +85,16 @@ router.beforeEach((to, from, next) => {
         path.startsWith('/question') ||
         path.startsWith('/result')
     ) {
+        let user = undefined
         try {
-            JSON.parse(localStorage.getItem('user'))
+            user = JSON.parse(localStorage.getItem('user'))
         } catch (e) {
-            return next({ path: '/Login' })
+            next({ path: '/Login' })
+            return
+        }
+        if(path.startsWith('/admin') && user.role < 1) {
+            next({ path: '/' })
+            return
         }
     }
     next()

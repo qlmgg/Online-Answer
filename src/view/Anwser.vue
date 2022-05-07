@@ -70,6 +70,7 @@ const submit = async () => {
     paper.score = res.data.score;
     paper.answerId = res.data.id;
   } catch (e) {
+    console.log(e);
     loading.value = false;
   }
   // 关闭摄像头
@@ -121,6 +122,14 @@ onBeforeRouteLeave((to, from) => {
   }
 });
 
+// 定位题目
+const scrollToQuestion = (index) => {
+  const card = document.getElementById("question_" + index);
+  if (card) {
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+};
+
 // 离开当前页面时
 onBeforeUnmount(() => {
   // 停止倒计时
@@ -136,7 +145,7 @@ onMounted(() => {
     const _paper = await getPaperInfo(id);
     // 试卷不在进行中
     if (computePaperState(_paper.data.time) !== 2) {
-      ElMessage('本试卷不在答题日期内，无法答题！')
+      ElMessage("本试卷不在答题日期内，无法答题！");
       router.push(`/exampaper/${id}`);
       return;
     }
@@ -309,7 +318,7 @@ onMounted(() => {
             :key="q._id"
           >
             <template #index>
-              <el-tag class="index">
+              <el-tag class="index" :id="`question_${i}`">
                 {{ i + 1 }}
               </el-tag>
             </template>
@@ -318,56 +327,55 @@ onMounted(() => {
       </div>
     </el-col>
     <el-col :span="8" class="overview">
-      <el-affix>
-        <div class="wrap">
-          <el-row class="time">
-            <el-col :span="12">剩余时间：</el-col>
-            <el-col :span="12">{{ formatTime(remaining_time) }}</el-col>
-          </el-row>
-          <el-row :gutter="20" justify="start">
-            <el-col :span="3" v-for="(q, i) in paper.info.questions" :key="i">
-              <el-tag
-                :effect="
-                  paper.answers[i] &&
-                  paper.answers[i].answer !== '' &&
-                  paper.answers[i].answer !== 'd41d8cd98f00b204e9800998ecf8427e'
-                    ? 'light'
-                    : 'plain'
-                "
-              >
-                <el-link type="primary" :href="`#${route.path}#${i}`">
-                  {{ i + 1 }}
-                </el-link>
-              </el-tag>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col>
-              <el-button
-                :loading="loading"
-                :disabled="loading"
-                type="primary"
-                size="large"
-                style="width: 100%; margin-top: 20px"
-                @click="submit"
-              >
-                交 卷
-              </el-button>
-            </el-col>
-          </el-row>
+      <div class="wrap">
+        <el-row class="time">
+          <el-col :span="12">剩余时间：</el-col>
+          <el-col :span="12">{{ formatTime(remaining_time) }}</el-col>
+        </el-row>
+        <el-row :gutter="20" justify="start">
+          <el-col :span="3" v-for="(q, i) in paper.info.questions" :key="i">
+            <el-tag
+              @click="scrollToQuestion(i)"
+              size="small"
+              style="cursor: pointer"
+              :effect="
+                paper.answers[i] &&
+                paper.answers[i].answer !== '' &&
+                paper.answers[i].answer !== 'd41d8cd98f00b204e9800998ecf8427e'
+                  ? 'light'
+                  : 'plain'
+              "
+            >
+              {{ i + 1 }}
+            </el-tag>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-button
+              :loading="loading"
+              :disabled="loading"
+              type="primary"
+              size="large"
+              style="width: 100%; margin-top: 20px"
+              @click="submit"
+            >
+              交 卷
+            </el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <div
+        v-if="paper.info.strict"
+        class="wrap camera"
+        style="margin-top: 32px"
+      >
+        <h3>图像采集</h3>
+        <div style="position: relative">
+          <video ref="video" width="320" height="256" autoplay></video>
+          <canvas ref="canvas" width="320" height="256"></canvas>
         </div>
-        <div
-          v-if="paper.info.strict"
-          class="wrap camera"
-          style="margin-top: 32px"
-        >
-          <h3>图像采集</h3>
-          <div style="position: relative">
-            <video ref="video" width="320" height="256" autoplay></video>
-            <canvas ref="canvas" width="320" height="256"></canvas>
-          </div>
-        </div>
-      </el-affix>
+      </div>
     </el-col>
   </el-row>
   <!-- 显示答题得分 -->
@@ -382,7 +390,7 @@ onMounted(() => {
           <el-button
             type="primary"
             v-if="paper.info.allow_view"
-            @click="router.replace(`/result/${paper.answerId}`)"
+            @click="router.replace(`/Result/${paper.answerId}`)"
           >
             查看试卷详情
           </el-button>
@@ -401,6 +409,8 @@ onMounted(() => {
   width: 100%;
 }
 .wrap {
+  position: sticky;
+  top: 99px;
   padding: 20px;
   background-color: var(--body-color);
   .time {
@@ -430,6 +440,11 @@ onMounted(() => {
 }
 .overview {
   padding: 20px;
+  .el-tag {
+    font-size: 12px;
+    width: 100%;
+    margin-bottom: 4px;
+  }
 }
 .el-space {
   margin-top: 20px;

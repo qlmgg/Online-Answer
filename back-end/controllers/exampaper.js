@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:15:50 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-28 14:27:14
+ * @Last Modified time: 2022-05-07 18:09:54
  */
 
 import Exampaper from '../models/exampaper.js'
@@ -12,30 +12,64 @@ import message from '../message/index.js'
 class ExampaperCtl {
     // 获取试卷列表
     async find(ctx) {
-        const page = ctx.query.page || 1
-        const limit = ctx.query.limit || 8
-        const from = ctx.query.from || ''
-        const keywords = ctx.query.keywords || ''
+        const {
+            page = 1,
+            limit = 8,
+            from = '',
+            selfid = '',
+            keywords = '',
+            state = '',
+        } = ctx.query
         const skip = (page - 1) * limit
         const filter = {}
-        if (from) { filter.from = from }
         if (keywords) {
             filter.$or = [
                 { title: { $regex: new RegExp(keywords, 'i') } }
             ]
         }
-        const exampaper = await Exampaper
+        let exampaper = await Exampaper
             .find(filter)
             .sort({ _id: -1 })
             .skip(skip)
             .limit(limit)
             // 查询中的from字段用User表替换
             .populate('from')
+
         exampaper.forEach(v => {
-            v.from = v.from ? v.from : { _id: 0, nickname: '已注销用户' }
+            v.from = v.from ? v.from : message.DeletedUsers
         })
+        // 过滤试卷状态
+        if (state) {
+            const time = Date.now()
+            exampaper = exampaper.filter(v => {
+                return (
+                    state === '1'
+                        ? time < v.time[0]
+                        : state === '2'
+                            ? time > v.time[1]
+                            : state === '3'
+                                ? time > v.time[0] && time < v.time[1]
+                                : false
+                )
+            })
+        }
+        // 过滤试卷所属人
+        if (from) {
+            exampaper = exampaper.filter(v => {
+                return (
+                    from === 'own'
+                        ? v.from._id.toString() === selfid
+                        : v.from._id.toString() !== selfid
+                )
+            })
+        }
         // 查询试卷总数
-        const total = await Exampaper.count()
+        let total = 0
+        if (!state) {
+            total = await Exampaper.find(filter).count()
+        } else {
+            total = exampaper.length
+        }
         // 计算总页数
         const pageCount = Math.ceil(total / limit)
         ctx.body = {
@@ -50,7 +84,7 @@ class ExampaperCtl {
             ctx.body = { code: -1, msg: message.PaperNotFound }
             return
         }
-        exampaper.from = exampaper.from || { _id: 0, nickname: '已注销用户' }
+        exampaper.from = exampaper.from || message.DeletedUsers
         ctx.body = { code: 0, msg: message.QuerySuccess, data: exampaper }
     }
 

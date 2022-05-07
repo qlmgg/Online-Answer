@@ -13,7 +13,6 @@ if (token) {
 watch(
   () => store.state.token,
   (val) => {
-    console.log("token更新了", val);
     localStorage.setItem("token", val);
   }
 );
@@ -36,7 +35,6 @@ if (user) {
 watch(
   () => store.state.user,
   (val) => {
-    console.log("user变化");
     localStorage.setItem("user", JSON.stringify(val));
   },
   {
