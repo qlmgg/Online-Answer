@@ -31,6 +31,8 @@ const answer = ref(
 const correct = computeAnswerIndex(question);
 // 是否来自题库
 const isCloud = user._id !== question.author;
+// 是否是管理员
+const isAdmin = user.role === 2;
 // 增加选项
 const addOption = () => {
   question.option.push("");
@@ -91,11 +93,7 @@ watch(
             <el-tag>
               {{ ["单选题", "多选题", "简答题"][question.type] }}
             </el-tag>
-            <el-tag
-              type="success"
-              style="margin-left: 8px"
-              v-if="editable && isCloud"
-            >
+            <el-tag type="success" style="margin-left: 8px" v-if="editable && isCloud">
               云题目
             </el-tag>
             <slot name="action" />
@@ -115,11 +113,11 @@ watch(
           v-model="answer"
           :label="i"
           size="large"
-          :disabled="(editable && isCloud) || disabled"
+          :disabled="(editable && isCloud && !isAdmin) || disabled"
         >
           <el-input
             v-model="question.option[i]"
-            v-if="editable && !isCloud"
+            v-if="(editable && !isCloud) || isAdmin"
             :placeholder="'选项' + (i + 1)"
             maxlength="200"
           >
@@ -137,10 +135,7 @@ watch(
     </template>
     <!-- 多选题 -->
     <template v-else-if="question.type === 1">
-      <el-checkbox-group
-        v-model="answer"
-        :disabled="(editable && isCloud) || disabled"
-      >
+      <el-checkbox-group v-model="answer" :disabled="(editable && isCloud && !isAdmin) || disabled">
         <div
           class="text item"
           v-for="(o, i) in question.option"
@@ -150,7 +145,7 @@ watch(
           <el-checkbox :label="i" size="large">
             <el-input
               v-model="question.option[i]"
-              v-if="editable && !isCloud"
+              v-if="(editable && !isCloud) || isAdmin"
               :placeholder="'选项' + (i + 1)"
               maxlength="200"
             >
@@ -173,26 +168,19 @@ watch(
         class="item"
         v-model="answer"
         :placeholder="editable ? '请输入参考答案(最大长度500个字符)' : '请作答'"
-        :disabled="(editable && isCloud) || disabled"
+        :disabled="(editable && isCloud && !isAdmin) || disabled"
         maxlength="500"
         type="textarea"
       ></el-input>
       <br />
-      <el-input
-        v-if="disabled"
-        disabled
-        class="correct"
-        :modelValue="question.answer"
-      >
+      <el-input v-if="disabled" disabled class="correct" :modelValue="question.answer">
         <template #prepend>参考答案</template>
       </el-input>
     </template>
     <el-button
       v-if="
-        editable &&
-        !isCloud &&
-        question.option.length < 4 &&
-        question.type !== 2
+        (question.option.length < 4 && question.type !== 2 && editable && !isCloud) ||
+        (question.option.length < 4 && question.type !== 2 && isAdmin)
       "
       @click="addOption"
       :icon="Plus"

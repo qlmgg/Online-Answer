@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:15:50 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-05-07 18:09:54
+ * @Last Modified time: 2022-05-08 16:34:49
  */
 
 import Exampaper from '../models/exampaper.js'
@@ -15,7 +15,6 @@ class ExampaperCtl {
         const {
             page = 1,
             limit = 8,
-            from = '',
             selfid = '',
             keywords = '',
             state = '',
@@ -34,32 +33,24 @@ class ExampaperCtl {
             .limit(limit)
             // 查询中的from字段用User表替换
             .populate('from')
-
         exampaper.forEach(v => {
             v.from = v.from ? v.from : message.DeletedUsers
         })
+        // 角色为教师过滤出属于自己的试卷
+        if (selfid) {
+            exampaper = exampaper.filter(v => {
+                return v.from._id.toString() === selfid
+            })
+        }
         // 过滤试卷状态
         if (state) {
             const time = Date.now()
             exampaper = exampaper.filter(v => {
                 return (
-                    state === '1'
-                        ? time < v.time[0]
-                        : state === '2'
-                            ? time > v.time[1]
-                            : state === '3'
-                                ? time > v.time[0] && time < v.time[1]
+                    state === '1' ? time < v.time[0]
+                        : state === '2' ? time > v.time[1]
+                            : state === '3' ? time > v.time[0] && time < v.time[1]
                                 : false
-                )
-            })
-        }
-        // 过滤试卷所属人
-        if (from) {
-            exampaper = exampaper.filter(v => {
-                return (
-                    from === 'own'
-                        ? v.from._id.toString() === selfid
-                        : v.from._id.toString() !== selfid
                 )
             })
         }

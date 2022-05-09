@@ -50,10 +50,7 @@ const questionType = ref(0);
         {{ o }}
       </li>
     </ul>
-    <ul
-      v-else-if="questionType === 1"
-      style="margin-top: 32px; list-style: square"
-    >
+    <ul v-else-if="questionType === 1" style="margin-top: 32px; list-style: square">
       <li
         v-for="(o, i) in data.info.option"
         :key="o"
@@ -63,9 +60,9 @@ const questionType = ref(0);
         {{ o }}
       </li>
     </ul>
-    <textarea v-else>
-      {{ corectAnswer }}
-    </textarea>
+    <p v-else>
+      {{ data.info.public ? data.info.answer : "题目答案已隐藏" }}
+    </p>
     <div class="descrption">题目解析：暂无。</div>
     <div class="from">
       本题目来自用户《

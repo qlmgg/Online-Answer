@@ -2,13 +2,17 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:26:28 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-09 18:05:39
+ * @Last Modified time: 2022-05-08 17:19:35
  */
 
 // api统计信息，一段时间后同步到数据库里
 export const api_status = []
 // 用户增长信息，同上
 export const user_status = []
+
+// process.on('SIGINT', async () => {
+//     console.log('Got SIGINT.  Press Control-D/Control-C to exit.');
+// });
 
 // 统计每个接口请求的次数
 export default function (router) {

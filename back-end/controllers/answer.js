@@ -2,13 +2,14 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:05:23 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-05-07 18:56:35
+ * @Last Modified time: 2022-05-08 17:02:29
  */
 
 import Answer from '../models/answer.js'
 import Exampaper from '../models/exampaper.js'
 import Question from '../models/question.js'
 import RankingList from '../models/rankinglist.js'
+import User from '../models/user.js'
 import message from '../message/index.js'
 
 class AnswerCtl {
@@ -16,11 +17,16 @@ class AnswerCtl {
     // 获取回答列表
     async find(ctx) {
         const ctxUser = ctx.request.user
-        const { page = 1, exampaper, limit = 10, state = '' } = ctx.query
+        const { page = 1, exampaper, limit = 10, state = '', score = '' } = ctx.query
         const skip = (page - 1) * limit
         const filter = {}
         if (state) {
             filter.state = state
+        }
+        if (score) {
+            score === '1' ? filter.score = { $gte: 60 } // 分数大于等于60
+                : score === '2' ? filter.score = { $lt: 60 } // 分数小于60
+                    : {}
         }
         // 角色为学生仅查询自己的答卷
         if (ctxUser.role === 0) {
@@ -258,6 +264,50 @@ class AnswerCtl {
         }
         await Answer.findByIdAndDelete(id)
         ctx.body = { code: 0, msg: message.DeleteSuccess }
+    }
+
+    // 更新答卷
+    async update(ctx) {
+        ctx.verifyParams({
+            shortResult: { type: 'array' },
+            shortScore: { type: 'number' }
+        })
+        const id = ctx.params.id
+        const answer = await Answer.findById(id).populate('exampaper')
+        if (!answer) {
+            ctx.body = { code: -1, msg: message.AnswerNotFound }
+            return
+        }
+        let user = await User.findById(answer.exampaper.from)
+        user = user || message.DeletedUsers
+        const ctxUser = ctx.request.user
+        console.log(ctxUser._id, user);
+        if (ctxUser._id !== user._id.toString() && ctxUser.role <= user.role) {
+            ctx.body = { code: -1, msg: message.PermissionDenied }
+            return
+        }
+        const { shortResult, shortScore } = ctx.request.body
+        // 过滤出简答题
+        const shortQuestion = answer.answers.filter(v => v.question.type === 2)
+        // 批改简答题
+        let correctCount = 0
+        shortQuestion.forEach(v => {
+            const question = shortResult.find(vv => vv._id === v._id.toString())
+            if (question) {
+                v.done = true
+                v.correct = question.correct
+                question.correct && correctCount++
+            }
+        })
+        // 更新答卷得分
+        answer.score += shortScore
+        // 更新答卷正确率
+        const _correctCount = answer.answers.filter(v => v.question.type !== 2 && v.answer === v.question.answer).length
+        answer.correctRate = ((_correctCount + correctCount) / answer.answers.length) * 100 || 0
+        // 更新答卷状态
+        answer.state = 0
+        // const newAnswer = await Answer.findByIdAndUpdate(id, answer, { new: 1 })
+        ctx.body = { code: 0, msg: message.UpdateSuccess, data: answer }
     }
 }
 

@@ -13,9 +13,17 @@ const searchExampaper = async (reg, skip, limit) => {
 
 const searchQuestion = async (reg, skip, limit) => {
     const questions = await Question
-        .find({ $or: [{ title: { $regex: reg } }] })
+        .find({
+            ban: false,
+            $or: [{ title: { $regex: reg } }]
+        })
         .skip(skip)
         .limit(limit)
+    questions.forEach(v => {
+        if (!v.public) {
+            v.answer = ''
+        }
+    })
     return questions
 }
 

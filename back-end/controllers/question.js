@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:17:30 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-05-07 17:55:32
+ * @Last Modified time: 2022-05-08 15:34:22
  */
 
 import Question from '../models/question.js'
@@ -22,7 +22,6 @@ class QuestionCtl {
             ban = "",
             public: _public,
             exampaper = "",
-            from = '',
             selfid = ''
         } = ctx.query
         // 如果传入试卷ID，则返回试卷包含的试题
@@ -60,14 +59,10 @@ class QuestionCtl {
                 v.answer = ''
             }
         })
-        // 过滤出题目人
-        if (from) {
+        // 角色为教师过滤出属于自己的题目
+        if (selfid) {
             questions = questions.filter(v => {
-                return (
-                    from === 'own'
-                        ? v.author._id.toString() === selfid
-                        : v.author._id.toString() !== selfid
-                )
+                return v.author._id.toString() === selfid
             })
         }
         // 查询题目总数

@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:06:58 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-04-08 22:21:10
+ * @Last Modified time: 2022-05-08 16:38:12
  */
 
 import Comment from '../models/comment.js'
@@ -48,14 +48,15 @@ class CommentCtl {
     // 删除评论
     async deleteById(ctx) {
         const { id: _id } = ctx.params
-        const comment = await Comment.findOne({ _id })
+        const comment = await Comment.findOne({ _id }).populate('user')
         if (!comment) {
             ctx.body = { code: -1, msg: message.CommentNotFound }
             return
         }
+        comment.user = comment.user || message.DeletedUsers
         const ctxUser = ctx.request.user
         // 删除的不是自己的评论，且操作用户不是管理员
-        if (ctxUser._id !== comment.user && ctxUser.role < 1) {
+        if (ctxUser._id !== comment.user._id.toString() && ctxUser.role < comment.user.role) {
             ctx.body = { code: -1, msg: message.PermissionDenied }
             return
         }

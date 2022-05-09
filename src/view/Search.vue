@@ -94,11 +94,7 @@ onBeforeRouteLeave((to) => {
           @keyup.enter="handleSearch"
         >
           <template #prepend>
-            <el-select
-              v-model="searchType"
-              placeholder="类型"
-              style="width: 80px"
-            >
+            <el-select v-model="searchType" placeholder="类型" style="width: 80px">
               <el-option label="全部" :value="0" />
               <el-option label="试卷" :value="1" />
               <el-option label="题目" :value="2" />
@@ -122,11 +118,7 @@ onBeforeRouteLeave((to) => {
     <!-- {{ searchList }} -->
     <el-row justify="center" style="margin-bottom: 16px">
       <el-col :span="16" class="keywords">
-        <el-row
-          class="keywords-row"
-          v-for="i in Math.ceil(searchList.length / 2)"
-          :key="i"
-        >
+        <el-row class="keywords-row" v-for="i in Math.ceil(searchList.length / 2)" :key="i">
           <el-col
             :span="12"
             v-for="(s, j) in searchList.slice((i - 1) * 2, (i - 1) * 2 + 2)"
@@ -180,11 +172,14 @@ onBeforeRouteLeave((to) => {
                 </el-tag>
               </div>
             </template>
-            <ul :style="{ listStyle: r.type === 1 ? 'square' : '' }">
+            <ul v-if="r.type !== 2" :style="{ listStyle: r.type === 1 ? 'square' : '' }">
               <li v-for="o in r.option" :key="o">
                 {{ o }}
               </li>
             </ul>
+            <p v-else>
+              {{ r.public ? r.answer : "题目答案已隐藏" }}
+            </p>
           </el-card>
         </template>
       </el-space>

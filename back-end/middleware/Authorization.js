@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:26:23 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-05-07 17:24:51
+ * @Last Modified time: 2022-05-08 13:25:19
  */
 
 import jwt from 'jsonwebtoken'
@@ -29,6 +29,7 @@ const authList = [
     { pattern: /\/hotwords/, method: 'POST', role: 2 },      // 增加搜索词
     { pattern: /\/hotwords/, method: 'DELETE', role: 2 },   // 删除搜索词
     { pattern: /\/answers/, method: 'DELETE', role: 1 },   // 删除答卷
+    { pattern: /\/answers/, method: 'PUT', role: 1 },   // 更新答卷
     { pattern: /\/status/, method: 'GET', role: 2 },   // 查看统计数据
 
 ]

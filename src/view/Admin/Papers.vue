@@ -12,9 +12,8 @@ const filter = reactive({
   keywords: "",
   page: 1,
   limit: 10,
-  from: user.role === 1 ? "own" : "other",
   state: "",
-  selfid: user._id,
+  selfid: user.role === 1 ? user._id : "",
 });
 // 试卷总页数
 const pageCount = ref(0);
@@ -35,7 +34,6 @@ const handleResetFilter = () => {
   filter.keywords = "";
   filter.page = 1;
   filter.limit = 10;
-  filter.from = user.role === 1 ? "own" : "other";
   filter.state = "";
   handleGetPapers();
 };
@@ -110,8 +108,7 @@ const handleChange = (page) => {
 // 键盘翻页事件
 const handleKeyUp = (e) => {
   if (e.key === "ArrowRight") {
-    filter.page =
-      filter.page < pageCount.value ? filter.page + 1 : pageCount.value;
+    filter.page = filter.page < pageCount.value ? filter.page + 1 : pageCount.value;
     handleSearch();
   } else if (e.key === "ArrowLeft") {
     filter.page = filter.page > 1 ? filter.page - 1 : 1;
@@ -141,14 +138,6 @@ handleGetPapers();
             <el-option label="进行中" value="3" />
           </el-select>
         </el-col>
-        <el-col :span="7">
-          出卷人:
-          <el-select v-model="filter.from" @change="handleGetPapers">
-            <el-option label="全部" value="" />
-            <el-option label="自己" value="own" />
-            <el-option label="其他人" value="other" />
-          </el-select>
-        </el-col>
         <el-col :span="8">
           <el-input
             v-model="filter.keywords"
@@ -158,9 +147,7 @@ handleGetPapers();
           />
         </el-col>
         <el-col :span="2">
-          <el-button style="margin-left: 4px" @click="handleResetFilter">
-            重置
-          </el-button>
+          <el-button style="margin-left: 4px" @click="handleResetFilter"> 重置 </el-button>
         </el-col>
       </el-row>
     </el-header>
@@ -184,17 +171,11 @@ handleGetPapers();
           <el-table-column prop="time" label="状态" width="100px">
             <template #default="scope">
               <el-tag type="info" v-if="scope.row.state === 0"> 未开始 </el-tag>
-              <el-tag type="danger" v-else-if="scope.row.state === 1">
-                已结束
-              </el-tag>
+              <el-tag type="danger" v-else-if="scope.row.state === 1"> 已结束 </el-tag>
               <el-tag type="success" v-else> 进行中 </el-tag>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="questions.length"
-            label="题目数量"
-            width="100px"
-          />
+          <el-table-column prop="questions.length" label="题目数量" width="100px" />
           <el-table-column prop="time" label="截止日期">
             <template #default="scope">
               <el-tooltip

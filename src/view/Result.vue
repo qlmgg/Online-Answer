@@ -1,7 +1,7 @@
 <script setup>
 import { Check, Minus, Close } from "@element-plus/icons-vue";
 import QuestionCard from "@/components/QuestionCard.vue";
-import { getAnswer, getPaperInfo } from "@/api/index.js";
+import { getAnswer } from "@/api/index.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -39,18 +39,19 @@ const forbidden = ref(false);
             <el-icon><close /></el-icon>
           </el-tag>
         </template>
-        <el-tag v-else type="warning">
+        <el-tag v-else-if="!q.done" type="warning">
           <el-icon><minus /></el-icon>
+        </el-tag>
+        <el-tag v-else-if="q.correct" type="success">
+          <el-icon><check /></el-icon>
+        </el-tag>
+        <el-tag v-else type="warning">
+          <el-icon><close /></el-icon>
         </el-tag>
       </template>
     </QuestionCard>
   </el-space>
-  <el-result
-    v-if="forbidden"
-    icon="error"
-    title="禁止查看"
-    sub-title="当前试卷禁止查看结果"
-  >
+  <el-result v-if="forbidden" icon="error" title="禁止查看" sub-title="当前试卷禁止查看结果">
     <template #extra>
       <el-button type="primary" @click="router.go(-1)">返回</el-button>
     </template>

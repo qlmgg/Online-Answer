@@ -12,9 +12,8 @@ const filter = reactive({
   page: 1,
   ban: "",
   type: "",
-  selfid: user._id,
   _public: "",
-  from: user.role === 1 ? "own" : "other",
+  selfid: user.role === 1 ? user._id : "",
 });
 // 题目总数量
 const total = ref(0);
@@ -73,7 +72,6 @@ const handleResetFilter = () => {
   filter.ban = "";
   filter._public = "";
   filter.type = "";
-  filter.from = user.role === 1 ? "own" : "other";
   handleGetQuestions();
 };
 
@@ -240,56 +238,32 @@ handleGetQuestions();
   <el-container>
     <el-header style="padding: 16px">
       <el-row>
-        <el-col :span="4">
+        <el-col :span="5">
           状态:
-          <el-select
-            v-model="filter.ban"
-            placeholder="Select"
-            @change="handleGetQuestions"
-          >
+          <el-select v-model="filter.ban" placeholder="Select" @change="handleGetQuestions">
             <el-option label="全部" value="" />
             <el-option label="禁用" :value="true" />
             <el-option label="启用" :value="false" />
           </el-select>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="5">
           属性:
-          <el-select
-            v-model="filter._public"
-            placeholder="Select"
-            @change="handleGetQuestions"
-          >
+          <el-select v-model="filter._public" placeholder="Select" @change="handleGetQuestions">
             <el-option label="全部" value="" />
             <el-option label="公开" :value="true" />
             <el-option label="隐藏" :value="false" />
           </el-select>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="5">
           题型:
-          <el-select
-            v-model="filter.type"
-            placeholder="Select"
-            @change="handleGetQuestions"
-          >
+          <el-select v-model="filter.type" placeholder="Select" @change="handleGetQuestions">
             <el-option label="全部" value="" />
             <el-option label="单选题" :value="0" />
             <el-option label="多选题" :value="1" />
             <el-option label="简答题" :value="2" />
           </el-select>
         </el-col>
-        <el-col :span="4">
-          出题人:
-          <el-select
-            v-model="filter.from"
-            placeholder="Select"
-            @change="handleGetQuestions"
-          >
-            <el-option label="全部" value="" />
-            <el-option label="自己" value="own" />
-            <el-option label="其他人" value="other" />
-          </el-select>
-        </el-col>
-        <el-col :span="6">
+        <el-col :span="7">
           <el-input
             v-model="filter.keywords"
             placeholder="搜索：题目名"
@@ -298,9 +272,7 @@ handleGetQuestions();
           />
         </el-col>
         <el-col :span="2">
-          <el-button style="margin-left: 4px" @click="handleResetFilter"
-            >重置</el-button
-          >
+          <el-button style="margin-left: 4px" @click="handleResetFilter"> 重置 </el-button>
         </el-col>
       </el-row>
     </el-header>
@@ -377,28 +349,28 @@ handleGetQuestions();
             <template #default="scope">
               <el-button
                 size="small"
-                v-if="scope.row.author._id === user._id || user.role > 1"
+                v-if="scope.row.author._id === user._id || user.role > scope.row.author.role"
                 @click="handleEditQuestion(scope.$index, scope.row)"
               >
                 编辑
               </el-button>
               <el-button
                 size="small"
-                v-if="scope.row.author._id === user._id || user.role > 1"
+                v-if="scope.row.author._id === user._id || user.role > scope.row.author.role"
                 @click="handleBanQuestion(scope.$index, scope.row)"
               >
                 {{ scope.row.ban ? "启用" : "禁用" }}
               </el-button>
               <el-button
                 size="small"
-                v-if="scope.row.author._id === user._id || user.role > 1"
+                v-if="scope.row.author._id === user._id || user.role > scope.row.author.role"
                 @click="handlePublicQuestion(scope.$index, scope.row)"
               >
                 {{ scope.row.public ? "隐藏" : "公开" }}
               </el-button>
               <el-popconfirm
                 title="你确定要删除这个题目吗？"
-                v-if="scope.row.author._id === user._id || user.role > 1"
+                v-if="scope.row.author._id === user._id || user.role > scope.row.author.role"
                 @confirm="handleDeleteQuestion(scope.$index, scope.row)"
               >
                 <template #reference>
