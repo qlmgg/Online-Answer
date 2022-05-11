@@ -1,7 +1,7 @@
 <script setup>
 import { UserFilled } from "@element-plus/icons-vue";
 import SchoolSelect from "@/components/SchoolSelect.vue";
-import { updateUser, updatePwd } from "@/api/index.js";
+import { updateUser, updatePwd } from "@/api";
 import { HOST } from "@/utils/request.js";
 
 const store = useStore();
@@ -9,14 +9,7 @@ const user = store.state.user;
 
 // 编辑基本信息
 const showEditUser = ref(!true);
-const editUser = reactive({
-  avatar: user.avatar,
-  gender: user.gender,
-  role: user.role,
-  profile: user.profile,
-  nickname: user.nickname,
-  school: user.school,
-});
+const editUser = reactive({ ...user });
 const schoolChange = (v) => {
   editUser.school = v;
 };
@@ -29,21 +22,21 @@ const editPwd = reactive({
 });
 // 更新用户
 const handleUpdateUser = async () => {
-  await updateUser({ id: user._id, data: editUser });
-  showEditUser.value = false;
-  user.avatar = editUser.avatar;
-  user.gender = editUser.gender;
-  user.role = editUser.role;
-  user.profile = editUser.profile;
-  user.nickname = editUser.nickname;
-  user.school = editUser.school;
-  store.commit("updateUser", user);
-  ElNotification({
-    title: "Success",
-    message: "更新成功",
-    type: "success",
-    position: "top-left",
-  });
+  try {
+    const res = await updateUser({ id: user._id, data: editUser });
+    showEditUser.value = false;
+    if (res.code === 0) {
+      store.dispatch("updateUser", editUser);
+    }
+    ElNotification({
+      title: "提示",
+      message: res.msg,
+      type: res.code === 0 ? "success" : "warning",
+      position: "top-left",
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 // 头像文件上传成功事件
 const handleAvatarSuccess = (res, file) => {
@@ -82,32 +75,34 @@ const handleUpdatePwd = async () => {
     });
     return;
   }
-  const res = await updatePwd({
-    id: user._id,
-    data: {
-      pwd: editPwd.pwd,
-      new: editPwd.pwd1,
-    },
-  });
-  if (res.code === 0) {
-    ElNotification({
-      title: "Success",
-      message: "更新成功",
-      type: "success",
-      position: "top-left",
+  try {
+    const res = await updatePwd({
+      id: user._id,
+      data: {
+        pwd: editPwd.pwd,
+        new: editPwd.pwd1,
+      },
     });
-    showEditPwd.value = false;
-    editPwd.pwd = "";
-    editPwd.pwd1 = "";
-    editPwd.pwd2 = "";
-  } else {
-    ElNotification({
-      title: "Success",
-      message: "更新失败：" + res.msg,
-      type: "error",
-      position: "top-left",
-    });
-  }
+    if (res.code === 0) {
+      ElNotification({
+        title: "Success",
+        message: "更新成功",
+        type: "success",
+        position: "top-left",
+      });
+      showEditPwd.value = false;
+      editPwd.pwd = "";
+      editPwd.pwd1 = "";
+      editPwd.pwd2 = "";
+    } else {
+      ElNotification({
+        title: "Success",
+        message: "更新失败：" + res.msg,
+        type: "error",
+        position: "top-left",
+      });
+    }
+  } catch (error) {}
 };
 </script>
 <template>
@@ -157,11 +152,7 @@ const handleUpdatePwd = async () => {
         </el-upload>
       </el-form-item>
       <el-form-item label="昵称" label-width="80px">
-        <el-input
-          v-model="editUser.nickname"
-          maxlength="12"
-          autocomplete="off"
-        />
+        <el-input v-model="editUser.nickname" maxlength="12" autocomplete="off" />
       </el-form-item>
       <el-form-item label="性别" label-width="80px">
         <el-select v-model="editUser.gender">

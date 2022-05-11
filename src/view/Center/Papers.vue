@@ -1,7 +1,8 @@
 <script setup>
 import { onBeforeRouteLeave } from "vue-router";
-import { getAnswers } from "@/api/index.js";
+import { getAnswers } from "@/api";
 import AnswerCard from "@/components/AnswerCard.vue";
+import { UPDATE_CENTER_PAPERS_MUTATION } from "@/types/mutation";
 
 const store = useStore();
 const answers = reactive([]);
@@ -16,14 +17,16 @@ const questionCount = ref(0);
 const correctCount = ref(0);
 
 const handlePageChange = async (page = 1) => {
-  const res = await getAnswers({ page, limit: 3 });
-  answers.splice(0);
-  answers.push(...res.data.answers);
-  total.value = res.data.total;
-  avgScore.value = res.data.avgScore;
-  passingCount.value = res.data.passingCount;
-  questionCount.value = res.data.questionCount;
-  correctCount.value = res.data.correctCount;
+  try {
+    const res = await getAnswers({ page, limit: 3 });
+    answers.splice(0);
+    answers.push(...res.data.answers);
+    total.value = res.data.total;
+    avgScore.value = res.data.avgScore;
+    passingCount.value = res.data.passingCount;
+    questionCount.value = res.data.questionCount;
+    correctCount.value = res.data.correctCount;
+  } catch (error) {}
 };
 
 // 增加路由守卫
@@ -31,27 +34,29 @@ onBeforeRouteLeave((to) => {
   const path = to.path.toLowerCase();
   // 跳转到答题详情界面
   if (path.startsWith("/exampaper") || path.startsWith("/result")) {
-    store.commit("updateCenterPapersState", {
+    store.commit(UPDATE_CENTER_PAPERS_MUTATION, {
       _answers: answers,
       _total: total.value,
       _avgScore: avgScore.value,
       _passingCount: passingCount.value,
       _correctCount: correctCount.value,
+      _questionCount: questionCount.value,
     });
   } else {
-    store.commit("updateCenterPapersState", undefined);
+    store.commit(UPDATE_CENTER_PAPERS_MUTATION, undefined);
   }
   return true;
 });
 
 if (store.state.centerPapersState) {
-  const { _answers, _total, _avgScore, _passingCount, _correctCount } =
+  const { _answers, _total, _avgScore, _passingCount, _correctCount, _questionCount } =
     store.state.centerPapersState;
   answers.push(..._answers);
   total.value = _total;
   avgScore.value = _avgScore;
   passingCount.value = _passingCount;
   correctCount.value = _correctCount;
+  questionCount.value = _questionCount;
 } else {
   handlePageChange();
 }
@@ -72,9 +77,7 @@ if (store.state.centerPapersState) {
           答题正确率：
           <el-progress
             style="margin-top: 8px"
-            :percentage="
-              Number(((correctCount / questionCount) * 100).toFixed(2)) || 0
-            "
+            :percentage="Number(((correctCount / questionCount) * 100).toFixed(2)) || 0"
           />
         </el-card>
         <el-card shadow="hover">

@@ -1,20 +1,8 @@
 <script setup>
-import {
-  Edit,
-  Share,
-  Refresh,
-  Delete,
-  UserFilled,
-} from "@element-plus/icons-vue";
+import { Edit, Share, Refresh, Delete, UserFilled } from "@element-plus/icons-vue";
 
 import CommentItem from "@/components/CommentItem.vue";
-import {
-  getPaperInfo,
-  getComments,
-  getAnswers,
-  postComment,
-  deleteComment,
-} from "@/api/index.js";
+import { getPaperInfo, getComments, getAnswers, postComment, deleteComment } from "@/api/index.js";
 import { id2time } from "@/utils/index.js";
 import { computePaperState } from "@/utils/compute.js";
 
@@ -67,14 +55,16 @@ const paperState = ref(0);
 // 查询考卷评论
 const handleMoreComments = async () => {
   loading_comments.value = true;
-  const res = await getComments({ id, page: page.value });
-  exampaper.comments.push(...res.data.comments);
-  total.value = res.data.total;
-  page.value++;
+  try {
+    const res = await getComments({ id, page: page.value });
+    exampaper.comments.push(...res.data.comments);
+    total.value = res.data.total;
+    page.value++;
+    if (exampaper.comments.length >= total.value) {
+      hasMoreComment.value = false;
+    }
+  } catch (error) {}
   loading_comments.value = false;
-  if (exampaper.comments.length >= total.value) {
-    hasMoreComment.value = false;
-  }
 };
 
 // 刷新评论
@@ -87,68 +77,74 @@ const refreshComments = () => {
 // 评论
 const handlePostComment = async () => {
   loading_post_comment.value = true;
-  const res = await postComment({
-    user: user._id,
-    content: comment.value,
-    exampaperid: id,
-  });
-  loading_post_comment.value = false;
-  if (res.code === 0) {
-    ElNotification({
-      title: "评论成功",
-      message: `已提交评论：${comment.value}`,
-      type: "success",
-      position: "top-left",
-    });
-    const { _id } = res.data;
-    // 将评论放到comments中
-    const data = {
-      _id,
-      user,
+  try {
+    const res = await postComment({
+      user: user._id,
       content: comment.value,
       exampaperid: id,
-    };
-    exampaper.comments.unshift(data);
-    comment.value = "";
-  }
+    });
+    if (res.code === 0) {
+      ElNotification({
+        title: "评论成功",
+        message: `已提交评论：${comment.value}`,
+        type: "success",
+        position: "top-left",
+      });
+      const { _id } = res.data;
+      // 将评论放到comments中
+      const data = {
+        _id,
+        user,
+        content: comment.value,
+        exampaperid: id,
+      };
+      exampaper.comments.unshift(data);
+      comment.value = "";
+    }
+  } catch (error) {}
+  loading_post_comment.value = false;
 };
 // 删除评论
 const handleDeleteComment = async (comment, index) => {
-  const res = await deleteComment(comment._id);
-  if (res.code === 0) {
-    ElNotification({
-      title: "删除评论成功",
-      message: `已删除评论：${comment.content}`,
-      type: "success",
-      position: "top-left",
-    });
-    exampaper.comments.splice(index, 1);
-  } else {
-    ElNotification({
-      title: "删除评论失败",
-      message: `原因：${res.msg}`,
-      type: "warning",
-      position: "top-left",
-    });
-  }
+  try {
+    const res = await deleteComment(comment._id);
+    if (res.code === 0) {
+      ElNotification({
+        title: "删除评论成功",
+        message: `已删除评论：${comment.content}`,
+        type: "success",
+        position: "top-left",
+      });
+      exampaper.comments.splice(index, 1);
+    } else {
+      ElNotification({
+        title: "删除评论失败",
+        message: `原因：${res.msg}`,
+        type: "warning",
+        position: "top-left",
+      });
+    }
+  } catch (error) {}
 };
 
 (async () => {
   // 查询考卷详情
-  const res = await getPaperInfo(id);
-  loading.value = false;
-  exampaper.info = res.data;
-  // 试卷状态：未开始、已结束、进行中
-  paperState.value = computePaperState(exampaper.info.time);
-  // 获取评论
-  if (exampaper.info.allow_comments) {
-    handleMoreComments();
-  }
-  // 获取答卷记录
-  if (user) {
-    const res = await getAnswers({ exampaper: id });
-    exampaper.answers = res.data.answers;
-  }
+  try {
+    const res = await getPaperInfo(id);
+    loading.value = false;
+    exampaper.info = res.data;
+    // 试卷状态：未开始、已结束、进行中
+    paperState.value = computePaperState(exampaper.info.time);
+    // 获取评论
+    if (exampaper.info.allow_comments) {
+      handleMoreComments();
+    }
+    // 获取答卷记录
+    if (user) {
+      const res = await getAnswers({ exampaper: id });
+      exampaper.answers = res.data.answers;
+    }
+  } catch (error) {}
 })();
 </script>
 
@@ -163,12 +159,8 @@ const handleDeleteComment = async (comment, index) => {
       <el-tag size="small">
         {{ exampaper.info.multi_answer ? "多次答卷" : "单次答卷" }}
       </el-tag>
-      <el-tag size="small">
-        考试时长：{{ exampaper.info.total_time }} 分钟
-      </el-tag>
-      <el-tag size="small" type="danger" v-if="exampaper.info.strict">
-        严格卷
-      </el-tag>
+      <el-tag size="small"> 考试时长：{{ exampaper.info.total_time }} 分钟 </el-tag>
+      <el-tag size="small" type="danger" v-if="exampaper.info.strict"> 严格卷 </el-tag>
     </div>
     <el-descriptions :column="4">
       <el-descriptions-item align="center" label="题目数量：">
@@ -198,25 +190,18 @@ const handleDeleteComment = async (comment, index) => {
       </el-descriptions-item>
     </el-descriptions>
     <el-row justify="center" style="padding: 32px 0">
-      <el-button type="warning" v-if="paperState === 0">
-        考 试 未 开 始
-      </el-button>
-      <el-button type="danger" v-else-if="paperState === 1">
-        考 试 已 结 束
-      </el-button>
+      <el-button type="warning" v-if="paperState === 0"> 考 试 未 开 始 </el-button>
+      <el-button type="danger" v-else-if="paperState === 1"> 考 试 已 结 束 </el-button>
       <router-link
         :to="`/answer/${id}`"
         class="link"
         v-else-if="
-          exampaper.info.multi_answer ||
-          (!exampaper.info.multi_answer && !exampaper.answers.length)
+          exampaper.info.multi_answer || (!exampaper.info.multi_answer && !exampaper.answers.length)
         "
       >
         <el-button type="primary" size="large" :icon="Edit">开始答题</el-button>
       </router-link>
-      <el-button v-else type="primary" size="large" :icon="Edit" disabled>
-        您已完成答题
-      </el-button>
+      <el-button v-else type="primary" size="large" :icon="Edit" disabled> 您已完成答题 </el-button>
     </el-row>
   </div>
 
@@ -233,9 +218,7 @@ const handleDeleteComment = async (comment, index) => {
         </template>
       </el-table-column>
       <el-table-column prop="score" label="分数">
-        <template #default="scope">
-          {{ scope.row.score.toFixed(2) }} 分
-        </template>
+        <template #default="scope"> {{ scope.row.score.toFixed(2) }} 分 </template>
       </el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
@@ -295,45 +278,28 @@ const handleDeleteComment = async (comment, index) => {
 
     <!-- 评论列表 -->
     <el-space fill wrap>
-      <CommentItem
-        v-for="(c, i) in exampaper.comments"
-        :key="c._id"
-        :comment="c"
-      >
+      <CommentItem v-for="(c, i) in exampaper.comments" :key="c._id" :comment="c">
         <!-- 自己的评论 或 自己的试卷 或 自己是管理员 则 显示删除按钮 -->
         <template
           #action
           v-if="
             user &&
-            (c.user._id === user._id ||
-              exampaper.info.from._id === user._id ||
-              user.role > 0)
+            (c.user._id === user._id || exampaper.info.from._id === user._id || user.role > 0)
           "
         >
-          <el-button
-            type="danger"
-            :icon="Delete"
-            size="small"
-            @click="handleDeleteComment(c, i)"
-          />
+          <el-button type="danger" :icon="Delete" size="small" @click="handleDeleteComment(c, i)" />
         </template>
       </CommentItem>
       <el-empty description="暂时没有评论" v-if="!exampaper.comments.length" />
     </el-space>
 
     <!-- 更多评论按钮 -->
-    <el-button
-      style="margin-top: 20px"
-      v-if="hasMoreComment"
-      @click="handleMoreComments"
-    >
+    <el-button style="margin-top: 20px" v-if="hasMoreComment" @click="handleMoreComments">
       加载更多评论
     </el-button>
   </div>
   <el-empty
-    :description="
-      exampaper.info.allow_comments === null ? '评论加载中...' : '试卷禁止评论'
-    "
+    :description="exampaper.info.allow_comments === null ? '评论加载中...' : '试卷禁止评论'"
     v-else
   />
 </template>

@@ -9,12 +9,14 @@ const singleCount = ref(0);
 const mutltiCount = ref(0);
 
 const handlePageChange = async (page = 1) => {
-  const res = await getWrongs({ page, limit: 3 });
-  wrongs.splice(0);
-  wrongs.push(...res.data.wrongs);
-  total.value = res.data.total;
-  singleCount.value = res.data.singleCount;
-  mutltiCount.value = res.data.mutltiCount;
+  try {
+    const res = await getWrongs({ page, limit: 3 });
+    wrongs.splice(0);
+    wrongs.push(...res.data.wrongs);
+    total.value = res.data.total;
+    singleCount.value = res.data.singleCount;
+    mutltiCount.value = res.data.mutltiCount;
+  } catch (error) {}
 };
 
 handlePageChange();
@@ -25,31 +27,21 @@ handlePageChange();
     <el-col :span="6" style="padding-right: 16px">
       <el-space :size="16" wrap fill>
         <el-card shadow="hover">
-          <el-tag size="large">
-            错题数量： {{ singleCount + mutltiCount }} 题
-          </el-tag>
+          <el-tag size="large"> 错题数量： {{ singleCount + mutltiCount }} 题 </el-tag>
         </el-card>
         <el-card shadow="hover">
-          <el-tag style="margin-bottom: 8px">
-            单选题： {{ singleCount }} 题
-          </el-tag>
+          <el-tag style="margin-bottom: 8px"> 单选题： {{ singleCount }} 题 </el-tag>
           <el-progress
             :percentage="
-              Number(
-                ((singleCount / (singleCount + mutltiCount)) * 100).toFixed(2)
-              ) || 0
+              Number(((singleCount / (singleCount + mutltiCount)) * 100).toFixed(2)) || 0
             "
           />
         </el-card>
         <el-card shadow="hover">
-          <el-tag style="margin-bottom: 8px">
-            多选题： {{ mutltiCount }} 题
-          </el-tag>
+          <el-tag style="margin-bottom: 8px"> 多选题： {{ mutltiCount }} 题 </el-tag>
           <el-progress
             :percentage="
-              Number(
-                ((mutltiCount / (singleCount + mutltiCount)) * 100).toFixed(2)
-              ) || 0
+              Number(((mutltiCount / (singleCount + mutltiCount)) * 100).toFixed(2)) || 0
             "
           />
         </el-card>
@@ -74,10 +66,7 @@ handlePageChange();
           <template #footer>
             <div class="footer">
               <span class="title">此题来自考卷</span>
-              <router-link
-                :to="`/Exampaper/${q.exampaper._id}`"
-                class="link footer"
-              >
+              <router-link :to="`/Exampaper/${q.exampaper._id}`" class="link footer">
                 《{{ q.exampaper.title }}》
               </router-link>
             </div>
