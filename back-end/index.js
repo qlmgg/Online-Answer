@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:28:06 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-05-06 11:40:49
+ * @Last Modified time: 2022-05-11 15:18:04
  */
 
 import { join } from 'path'
@@ -12,12 +12,13 @@ import cors from 'koa2-cors'
 import koaBody from 'koa-body'
 import koaStatic from 'koa-static'
 import koaParameter from 'koa-parameter'
+import koaJwt from 'koa-jwt'
 
 import router from './router/index.js'
 
 import Status from './middleware/Status.js'
 import MiddlewareLogger from './middleware/Logger.js'
-import Authorization from './middleware/Authorization.js'
+import RequestUser from './middleware/RequestUser.js'
 
 // eslint-disable-next-line
 import db from './db.js'
@@ -55,8 +56,15 @@ app.use(koaStatic(
 // 使用 参数校验 中间件
 app.use(koaParameter(app))
 
-// 使用 接口认证鉴权 中间件
-app.use(Authorization())
+// 使用 接口认证 中间件
+app.use(
+    koaJwt({ secret: process.env.TOKEN_SECRET }).unless({
+        path: [/\/users\/login/, /\/users\/logout/, /\/users\/register/, /\/banners/, /\/imgs/, /\/papers/]
+    })
+)
+
+// 使用 请求用户 中间件
+app.use(RequestUser())
 
 // 使用 接口调用统计 中间件
 app.use(Status(router.routes().router))

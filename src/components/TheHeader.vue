@@ -26,10 +26,8 @@ const handleLogout = () => {
       message: "已退出",
       type: "success",
     });
-    store.commit("updateUser", undefined);
-    store.commit("updateToken", undefined);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    store.dispatch("updateUser", undefined);
+    store.dispatch("updateToken", undefined);
     router.push("/");
   });
 };
@@ -110,7 +108,7 @@ const handleLogout = () => {
 header {
   margin: 0 auto;
   display: flex;
-  width: 1300px;
+  width: 1400px;
   background: #fff;
   .logo {
     flex: 1;

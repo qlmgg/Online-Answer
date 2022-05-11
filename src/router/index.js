@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory, createWebHashHistory } from "vue-router";
-
+import { createRouter, createWebHashHistory } from "vue-router";
+import store from '../store'
 import Home from "@/view/Home.vue";
 
 const routes = [
@@ -85,10 +85,8 @@ router.beforeEach((to, from, next) => {
     path.startsWith("/question") ||
     path.startsWith("/result")
   ) {
-    let user = undefined;
-    try {
-      user = JSON.parse(localStorage.getItem("user"));
-    } catch (e) {
+    const user = store.state.user
+    if (!user) {
       next({ path: "/Login" });
       return;
     }

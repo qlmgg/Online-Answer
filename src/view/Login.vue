@@ -23,8 +23,7 @@ const onSubmit = () => {
     .then((res) => {
       loading.value = false;
       if (res.code === 0) {
-        localStorage.setItem("user", JSON.stringify(res.data));
-        store.commit("updateUser", res.data);
+        store.dispatch("updateUser", res.data);
         ElMessage({
           message: `登录成功，${res.data.nickname}！`,
           type: "success",
@@ -54,26 +53,15 @@ const onSubmit = () => {
       <el-input v-model="form.username" maxlength="20"></el-input>
     </el-form-item>
     <el-form-item label="密码">
-      <el-input
-        v-model="form.password"
-        type="password"
-        show-password
-        maxlength="50"
-      ></el-input>
+      <el-input v-model="form.password" type="password" show-password maxlength="50"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button
-        type="primary"
-        @click="onSubmit"
-        :loading="loading"
-        :disabled="loading"
+      <el-button type="primary" @click="onSubmit" :loading="loading" :disabled="loading"
         >登录</el-button
       >
     </el-form-item>
     <el-form-item>
-      <router-link to="/Register" class="link">
-        没有账户？点击注册！
-      </router-link>
+      <router-link to="/Register" class="link"> 没有账户？点击注册！ </router-link>
     </el-form-item>
   </el-form>
 </template>

@@ -2,7 +2,7 @@
  * @Author: openrhc 
  * @Date: 2022-04-08 22:21:41 
  * @Last Modified by: openrhc
- * @Last Modified time: 2022-05-07 12:02:38
+ * @Last Modified time: 2022-05-11 16:25:38
  */
 
 import { readFileSync } from 'fs'
@@ -180,7 +180,6 @@ class UserCtl {
             ctx.body = { code: -1, msg: message.UserBanned }
             return
         }
-        ctx.request.body.userid = user._id.toString()
         const payload = {
             _id: user._id,
             username,
@@ -196,11 +195,14 @@ class UserCtl {
         )
         // 将token放到响应头
         ctx.set('Authorization', token)
+        // 移除查询的password字段
+        user.password = ''
         ctx.body = { code: 0, msg: message.LoginSuccess, data: user }
     }
 
     // 退出登录
     async logout(ctx) {
+        // TODO: 把失效token放进黑名单
         ctx.body = { code: 0, msg: message.LogoutSuccess }
     }
 
