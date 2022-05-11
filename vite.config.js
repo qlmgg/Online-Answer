@@ -46,6 +46,11 @@ export default defineConfig({
       '/uploads': {
         target: 'http://localhost:4000',
         changeOrigin: true
+      },
+      '/onlineanswer/api': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/onlineanswer\/api/, '')
       }
     }
   }
