@@ -191,17 +191,17 @@ handleGetAnswers();
             </template>
           </el-table-column>
           <el-table-column prop="user.nickname" label="答卷人" />
-          <el-table-column prop="score" label="分数" width="80">
+          <el-table-column prop="score" label="分数" width="90">
             <template #default="scope">
               <el-tag :type="scope.row.score >= 60 ? 'success' : 'danger'">
-                {{ scope.row.score }} 分
+                {{ scope.row.score.toFixed(2) }} 分
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="correctRate" label="正确率" width="80">
+          <el-table-column prop="correctRate" label="正确率" width="90">
             <template #default="scope">
               <el-tag :type="scope.row.correctRate >= 60 ? 'success' : 'danger'">
-                {{ scope.row.correctRate }} %
+                {{ scope.row.correctRate.toFixed(2) }} %
               </el-tag>
             </template>
           </el-table-column>

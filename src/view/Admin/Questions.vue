@@ -338,7 +338,7 @@ handleGetQuestions();
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="title" label="公开" width="80">
+          <el-table-column prop="title" label="答案" width="80">
             <template #default="scope">
               <el-tag :type="scope.row.public ? 'success' : 'danger'">
                 {{ scope.row.public ? "公开" : "隐藏" }}

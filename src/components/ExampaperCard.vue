@@ -19,7 +19,7 @@ const state = computePaperState(exam.time);
         <el-tag v-else size="small" type="success"> 进行中 </el-tag>
         <router-link
           class="link"
-          :to="`/exampaper/${exam._id}`"
+          :to="`/Exampaper/${exam._id}`"
           :title="exam.description"
           style="margin-left: 8px"
         >

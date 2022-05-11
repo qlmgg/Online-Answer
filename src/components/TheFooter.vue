@@ -22,7 +22,7 @@
 footer {
   padding: 32px 0;
   color: #d7d7d7;
-  width: 1300px;
+  width: 1400px;
   margin: 0 auto;
   background: #393d49;
 }

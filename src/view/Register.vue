@@ -1,10 +1,9 @@
 <script setup>
-import { Plus, Edit } from "@element-plus/icons-vue";
+import { Plus } from "@element-plus/icons-vue";
 import SchoolSelect from "@/components/SchoolSelect.vue";
 import { register } from "@/api/index.js";
 import { HOST } from "@/utils/request.js";
 
-const store = useStore();
 const router = useRouter();
 
 const loading = ref(false);
@@ -23,13 +22,7 @@ const form = reactive({
 
 // 注册事件
 const onSubmit = async () => {
-  if (
-    !form.username ||
-    !form.password1 ||
-    !form.password2 ||
-    !form.nickname ||
-    !form.school
-  ) {
+  if (!form.username || !form.password1 || !form.password2 || !form.nickname || !form.school) {
     ElMessage({
       message: "请填写完整",
       type: "info",
@@ -66,7 +59,7 @@ const onSubmit = async () => {
     type: "success",
   });
   // 跳转界面
-  router.push("/login");
+  router.push("/Login");
 };
 
 // 头像文件上传成功事件
@@ -115,18 +108,10 @@ const handleSchoolChange = (v) => {
       <el-input v-model="form.username" maxlength="20"></el-input>
     </el-form-item>
     <el-form-item label="密码" maxlength="50">
-      <el-input
-        v-model="form.password1"
-        type="password"
-        show-password
-      ></el-input>
+      <el-input v-model="form.password1" type="password" show-password></el-input>
     </el-form-item>
     <el-form-item label="确认密码" maxlength="50">
-      <el-input
-        v-model="form.password2"
-        type="password"
-        show-password
-      ></el-input>
+      <el-input v-model="form.password2" type="password" show-password></el-input>
     </el-form-item>
     <el-form-item label="昵称">
       <el-input v-model="form.nickname" maxlength="12"></el-input>
@@ -142,11 +127,7 @@ const handleSchoolChange = (v) => {
       <SchoolSelect @schoolChange="handleSchoolChange" />
     </el-form-item>
     <el-form-item>
-      <el-button
-        type="primary"
-        @click="onSubmit"
-        :loading="loading"
-        :disabled="loading"
+      <el-button type="primary" @click="onSubmit" :loading="loading" :disabled="loading"
         >注册</el-button
       >
     </el-form-item>

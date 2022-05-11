@@ -1,8 +1,10 @@
 <script setup>
-import { Search } from "@element-plus/icons-vue";
-import { getHotWords, search } from "@/api/index.js";
-import { id2time } from "@/utils/index.js";
 import { onBeforeRouteLeave } from "vue-router";
+import { Search } from "@element-plus/icons-vue";
+import { debounce } from "lodash";
+import { getHotWords, search } from "@/api";
+import { id2time } from "@/utils";
+import { UPDATE_SEARCH_MUTATION } from "@/types/mutation";
 
 // 搜索类型
 const searchType = ref(0);
@@ -28,7 +30,7 @@ watch(keywords, () => {
 });
 
 // 搜索事件
-const handleSearch = async (_keywords) => {
+const handleSearch = debounce(async (_keywords) => {
   if (_keywords && typeof _keywords === "string") {
     keywords.value = _keywords;
   }
@@ -45,7 +47,7 @@ const handleSearch = async (_keywords) => {
   loading.value = false;
   noresult.value = res.data.length === 0;
   searchResult.push(...res.data);
-};
+}, 200);
 
 // 增加路由守卫
 onBeforeRouteLeave((to) => {
@@ -53,12 +55,12 @@ onBeforeRouteLeave((to) => {
   // 跳转到查看试卷、题目详情界面
   if (path.startsWith("/question") || path.startsWith("/exampaper")) {
     // 临时保存搜索结果
-    store.commit("updatesearchState", {
+    store.commit(UPDATE_SEARCH_MUTATION, {
       _keywords: keywords.value,
       _searchResult: searchResult,
     });
   } else {
-    store.commit("updatesearchState", undefined);
+    store.commit(UPDATE_SEARCH_MUTATION, undefined);
   }
   return true;
 });
@@ -91,7 +93,7 @@ onBeforeRouteLeave((to) => {
           placeholder="请输入关键词以搜索"
           v-model="keywords"
           maxlength="200"
-          @keyup.enter="handleSearch"
+          @input="handleSearch"
         >
           <template #prepend>
             <el-select v-model="searchType" placeholder="类型" style="width: 80px">
